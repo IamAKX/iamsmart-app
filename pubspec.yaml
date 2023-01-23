@@ -1,0 +1,57 @@
+name: iamsmart
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.6 <3.0.0"
+
+dependencies:
+  awesome_dialog: ^3.0.2
+  carousel_slider: ^4.2.1
+  cloud_firestore: ^4.3.1
+  cupertino_icons: ^1.0.2
+  dropdown_search2: ^1.0.2
+  firebase_auth: ^4.2.5
+  firebase_core: ^2.4.1
+  firebase_storage: ^11.0.10
+  flashy_tab_bar2: ^0.0.6
+  flutter:
+    sdk: flutter
+  font_awesome_flutter: ^10.3.0
+  go_router: ^6.0.1
+  google_fonts: ^3.0.1
+  image_picker: ^0.8.6
+  intl: ^0.17.0
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.11.0
+  flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.2.16
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/image/
+    - assets/svg/
+    - assets/banner/
+
+flutter_native_splash:
+  image: assets/image/logo_512.png
+  color: "#ffffff"
+  web_image_mode: center
+  android_gravity: center
+  ios_content_mode: center
+# flutter pub run flutter_native_splash:create
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/image/logo_512.png"
+  adaptive_icon_background: "#ffffff"
+# flutter pub run flutter_launcher_icons:main

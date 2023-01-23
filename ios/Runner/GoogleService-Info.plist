@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>782280543705-nungngakh54juqabuhe99oh78chonbnd.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.782280543705-nungngakh54juqabuhe99oh78chonbnd</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBU50P9NPFT7xiTLUe-OR1FylLbPOj8xN0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>782280543705</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.visutechnologies.iamsmart</string>
+	<key>PROJECT_ID</key>
+	<string>iamsmart-d3a89</string>
+	<key>STORAGE_BUCKET</key>
+	<string>iamsmart-d3a89.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:782280543705:ios:41122e36c494c1295c9dc8</string>
+</dict>
+</plist>
