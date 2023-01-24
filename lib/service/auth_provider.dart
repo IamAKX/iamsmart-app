@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iamsmart/main.dart';
+import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/service/snakbar_service.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:string_validator/string_validator.dart';
 
+import '../util/constants.dart';
 import '../util/messages.dart';
+import 'db_service.dart';
 
 enum AuthStatus {
   notAuthenticated,
@@ -39,6 +45,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _auth.signOut();
       user = null;
+      prefs.clear();
       status = AuthStatus.notAuthenticated;
     } catch (e) {
       SnackBarService.instance.showSnackBarError("Error Logging Out");
@@ -82,7 +89,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> registerUserWithEmailAndPassword(
       String name, String email, String password) async {
-    if (email.isEmpty) {
+    if (name.isEmpty) {
       SnackBarService.instance.showSnackBarError('Enter Full name');
       return false;
     }
@@ -105,9 +112,29 @@ class AuthProvider extends ChangeNotifier {
       user!.updateDisplayName(name);
       user!.sendEmailVerification();
       SnackBarService.instance.showSnackBarSuccess(onSuccessfullSignupMsg);
+      UserProfile userProfile = UserProfile(
+        id: user?.uid,
+        name: name,
+        email: user?.email,
+        profileImage: defaultProfileImage,
+        kycDocumentType: '',
+        kycId: '',
+        kycDocumentImage: '',
+        bankAccountName: '',
+        bankIFSCCode: '',
+        bankAccountNumber: '',
+        bankBranchCode: '',
+        isProfileApproved: false,
+        isProfileSuspended: false,
+        isKycDone: false,
+        userWalletBalance: 0.0,
+        aiWalletBalance: 0.0,
+        lastLogin: Timestamp.now(),
+        createdAt: Timestamp.now(),
+      );
+      await DBService.instance.createUser(userProfile).then(
+          (value) => prefs.setString(PreferenceKey.user, userProfile.toJson()));
 
-      // await DBService.instance
-      //     .addUserToDb(user!.uid, name, email, otherData);
       notifyListeners();
       return true;
     } on FirebaseAuthException catch (e) {

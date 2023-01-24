@@ -29,8 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _auth = Provider.of<AuthProvider>(context);
     SnackBarService.instance.buildContext = context;
+    _auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: getBody(),
     );

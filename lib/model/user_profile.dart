@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class User {
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserProfile {
   String? id;
   String? name;
   String? email;
@@ -17,8 +19,9 @@ class User {
   bool? isKycDone;
   double? userWalletBalance;
   double? aiWalletBalance;
-  DateTime? lastLogin;
-  User({
+  Timestamp? lastLogin;
+  Timestamp? createdAt;
+  UserProfile({
     this.id,
     this.name,
     this.email,
@@ -36,9 +39,10 @@ class User {
     this.userWalletBalance,
     this.aiWalletBalance,
     this.lastLogin,
+    this.createdAt,
   });
 
-  User copyWith({
+  UserProfile copyWith({
     String? id,
     String? name,
     String? email,
@@ -55,9 +59,10 @@ class User {
     bool? isKycDone,
     double? userWalletBalance,
     double? aiWalletBalance,
-    DateTime? lastLogin,
+    Timestamp? lastLogin,
+    Timestamp? createdAt,
   }) {
-    return User(
+    return UserProfile(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
@@ -75,6 +80,7 @@ class User {
       userWalletBalance: userWalletBalance ?? this.userWalletBalance,
       aiWalletBalance: aiWalletBalance ?? this.aiWalletBalance,
       lastLogin: lastLogin ?? this.lastLogin,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -97,11 +103,12 @@ class User {
       'userWalletBalance': userWalletBalance,
       'aiWalletBalance': aiWalletBalance,
       'lastLogin': lastLogin?.millisecondsSinceEpoch,
+      'createdAt': createdAt?.millisecondsSinceEpoch,
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory UserProfile.fromMap(Map<String, dynamic> map) {
+    return UserProfile(
       id: map['id'],
       name: map['name'],
       email: map['email'],
@@ -119,25 +126,29 @@ class User {
       userWalletBalance: map['userWalletBalance']?.toDouble(),
       aiWalletBalance: map['aiWalletBalance']?.toDouble(),
       lastLogin: map['lastLogin'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['lastLogin'])
+          ? Timestamp.fromMillisecondsSinceEpoch(map['lastLogin'])
+          : null,
+      createdAt: map['createdAt'] != null
+          ? Timestamp.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source));
+  factory UserProfile.fromJson(String source) =>
+      UserProfile.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImage: $kycDocumentImage, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImage: $kycDocumentImage, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is User &&
+    return other is UserProfile &&
         other.id == id &&
         other.name == name &&
         other.email == email &&
@@ -154,7 +165,8 @@ class User {
         other.isKycDone == isKycDone &&
         other.userWalletBalance == userWalletBalance &&
         other.aiWalletBalance == aiWalletBalance &&
-        other.lastLogin == lastLogin;
+        other.lastLogin == lastLogin &&
+        other.createdAt == createdAt;
   }
 
   @override
@@ -175,6 +187,7 @@ class User {
         isKycDone.hashCode ^
         userWalletBalance.hashCode ^
         aiWalletBalance.hashCode ^
-        lastLogin.hashCode;
+        lastLogin.hashCode ^
+        createdAt.hashCode;
   }
 }
