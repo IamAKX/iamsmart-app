@@ -4,7 +4,7 @@ A new Flutter project.
 
 ## Screenshot
 
-![Screenshot_1674552379](https://user-images.githubusercontent.com/17857031/214257486-99e6d998-0932-4d7f-aca0-cbee7b1e8571.png)
+
 ![Screenshot_1674552384](https://user-images.githubusercontent.com/17857031/214257506-8b2f19e6-3ece-49a9-b770-b007b49ca7b2.png)
 ![Screenshot_1674552390](https://user-images.githubusercontent.com/17857031/214257511-c42eec9d-1308-445d-9010-a2ce6110a4ea.png)
 ![Screenshot_1674552410](https://user-images.githubusercontent.com/17857031/214257513-2393c442-a65d-451d-84b0-e0b59fd5a72d.png)
