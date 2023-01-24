@@ -77,6 +77,11 @@ class AuthProvider extends ChangeNotifier {
         logoutUser();
       } else {
         status = AuthStatus.authenticated;
+        await DBService.instance.updateLastLoginTime(user?.uid ?? '');
+        await DBService.instance.getUserById(user?.uid ?? '').then((value) {
+          UserProfile userProfile = value;
+          prefs.setString(PreferenceKey.user, userProfile.toJson());
+        });
       }
       notifyListeners();
     } on FirebaseAuthException catch (e) {

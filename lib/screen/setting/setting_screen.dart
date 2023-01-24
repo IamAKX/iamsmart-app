@@ -1,9 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/main.dart';
+import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_provider.dart';
@@ -22,7 +26,8 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   bool isBiometricEnabled = false;
   late AuthProvider _auth;
-
+  UserProfile userProfile =
+      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
   @override
   Widget build(BuildContext context) {
     _auth = Provider.of<AuthProvider>(context);
@@ -45,10 +50,18 @@ class _SettingScreenState extends State<SettingScreen> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/image/user.png',
+                child: CachedNetworkImage(
+                  imageUrl: userProfile.profileImage ?? '',
                   width: 80,
                   height: 80,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/image/user.png',
+                    width: 80,
+                    height: 80,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -58,7 +71,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'John Doe',
+                    userProfile.name ?? '',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   Text(
