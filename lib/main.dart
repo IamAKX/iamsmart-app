@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SnackBarService.instance.buildContext = context;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

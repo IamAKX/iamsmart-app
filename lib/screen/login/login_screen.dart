@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:iamsmart/screen/forgotPassword/forgot_password_screen.dart';
 import 'package:iamsmart/screen/mainContainer/main_container.dart';
 import 'package:iamsmart/screen/register/register_screen.dart';
+import 'package:provider/provider.dart';
 
+import '../../service/auth_provider.dart';
+import '../../service/snakbar_service.dart';
 import '../../util/theme.dart';
 import '../../widget/button_active.dart';
 import '../../widget/button_inactive.dart';
@@ -22,8 +25,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
 
+  late AuthProvider _auth;
+
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<AuthProvider>(context);
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       body: getBody(),
     );
@@ -103,11 +110,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: defaultPadding / 2,
               ),
               ActiveButton(
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    context.go(MainContainer.mainContainerRoute);
-                  },
-                  label: 'Sign In'),
+                onPressed: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _auth
+                      .loginUserWithEmailAndPassword(
+                          _emailCtrl.text, _passwordCtrl.text)
+                      .then((value) {
+                    if (_auth.status == AuthStatus.authenticated) {
+                      context.go(MainContainer.mainContainerRoute);
+                    }
+                  });
+                },
+                label: 'Sign In',
+                isDisabled: _auth.status == AuthStatus.authenticating,
+              ),
               InactiveButton(
                   onPressed: () => context.go(RegisterScreen.registerRoute),
                   label: 'Create Account'),

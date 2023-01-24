@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
+import 'package:provider/provider.dart';
 
+import '../../service/auth_provider.dart';
+import '../../service/snakbar_service.dart';
 import '../../util/colors.dart';
 import '../../util/theme.dart';
 import '../../widget/heading.dart';
@@ -18,9 +21,12 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   bool isBiometricEnabled = false;
+  late AuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<AuthProvider>(context);
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'Settings'),
@@ -150,7 +156,9 @@ class _SettingScreenState extends State<SettingScreen> {
             size: 15,
           ),
           onTap: () {
-            context.go(LoginScreen.loginRoute);
+            _auth
+                .logoutUser()
+                .then((value) => context.go(LoginScreen.loginRoute));
           },
         ),
       ],

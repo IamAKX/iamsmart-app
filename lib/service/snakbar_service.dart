@@ -14,7 +14,7 @@ class SnackBarService {
   void showSnackBarError(String message) {
     ScaffoldMessenger.of(_buildContext).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 4),
         content: Text(
           message,
           style: const TextStyle(color: Colors.white),
@@ -27,11 +27,11 @@ class SnackBarService {
   void showSnackBarSuccess(String message) {
     ScaffoldMessenger.of(_buildContext).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 4),
         content: Text(
           message,
           style: const TextStyle(
-            color: textColorDark,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.green,
@@ -42,7 +42,7 @@ class SnackBarService {
   void showSnackBarInfo(String message) {
     ScaffoldMessenger.of(_buildContext).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 4),
         content: Text(
           message,
           style: const TextStyle(

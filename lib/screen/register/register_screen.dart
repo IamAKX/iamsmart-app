@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_provider.dart';
+import '../../service/snakbar_service.dart';
 import '../../util/theme.dart';
 import '../../widget/button_active.dart';
 import '../../widget/button_inactive.dart';
@@ -28,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     _auth = Provider.of<AuthProvider>(context);
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       body: getBody(),
     );
@@ -83,20 +85,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: defaultPadding / 2,
               ),
               ActiveButton(
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    if (_auth.status != AuthStatus.authenticating) {
-                      _auth
-                          .registerUserWithEmailAndPassword(_nameCtrl.text,
-                              _emailCtrl.text, _passwordCtrl.text)
-                          .then((value) {
-                        if (value) {
-                          context.go(LoginScreen.loginRoute);
-                        }
-                      });
-                    }
-                  },
-                  label: 'Register'),
+                onPressed: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if (_auth.status != AuthStatus.authenticating) {
+                    _auth
+                        .registerUserWithEmailAndPassword(
+                            _nameCtrl.text, _emailCtrl.text, _passwordCtrl.text)
+                        .then((value) {
+                      if (value) {
+                        context.go(LoginScreen.loginRoute);
+                      }
+                    });
+                  }
+                },
+                label: 'Register',
+                isDisabled: _auth.status == AuthStatus.authenticating,
+              ),
               InactiveButton(
                   onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();

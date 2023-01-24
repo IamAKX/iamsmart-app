@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
+import 'package:provider/provider.dart';
 
+import '../../service/auth_provider.dart';
+import '../../service/snakbar_service.dart';
 import '../../util/theme.dart';
 import '../../widget/button_active.dart';
 import '../../widget/button_inactive.dart';
@@ -19,8 +22,12 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
 
+  late AuthProvider _auth;
+
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<AuthProvider>(context);
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       body: getBody(),
     );
@@ -71,10 +78,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 icon: FontAwesomeIcons.solidEnvelope,
               ),
               ActiveButton(
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  label: 'Reset Password'),
+                onPressed: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _auth.forgotPassword(_emailCtrl.text);
+                },
+                label: 'Reset Password',
+                isDisabled: _auth.status == AuthStatus.authenticating,
+              ),
               InactiveButton(
                   onPressed: () => context.go(LoginScreen.loginRoute),
                   label: 'Sign In'),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iamsmart/service/snakbar_service.dart';
+import 'package:string_validator/string_validator.dart';
 
 import '../util/messages.dart';
 
@@ -34,7 +35,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void logoutUser() async {
+  Future<void> logoutUser() async {
     try {
       await _auth.signOut();
       user = null;
@@ -47,6 +48,15 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> loginUserWithEmailAndPassword(
       String email, String password) async {
+    if (!isEmail(email)) {
+      SnackBarService.instance.showSnackBarError('Enter valid email');
+      return;
+    }
+    if (!isAlphanumeric(password)) {
+      SnackBarService.instance
+          .showSnackBarError('Enter alpha numeric password');
+      return;
+    }
     status = AuthStatus.authenticating;
     notifyListeners();
     try {
@@ -72,6 +82,19 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> registerUserWithEmailAndPassword(
       String name, String email, String password) async {
+    if (email.isEmpty) {
+      SnackBarService.instance.showSnackBarError('Enter Full name');
+      return false;
+    }
+    if (!isEmail(email)) {
+      SnackBarService.instance.showSnackBarError('Enter valid email');
+      return false;
+    }
+    if (!isAlphanumeric(password)) {
+      SnackBarService.instance
+          .showSnackBarError('Enter alpha numeric password');
+      return false;
+    }
     status = AuthStatus.authenticating;
     notifyListeners();
     try {
@@ -96,11 +119,16 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> forgotPassword(String email) async {
+    if (!isEmail(email)) {
+      SnackBarService.instance.showSnackBarError('Enter valid email');
+      return false;
+    }
     status = AuthStatus.authenticating;
     notifyListeners();
     try {
       await _auth.sendPasswordResetEmail(email: email);
       status = AuthStatus.forgotPwdMailSent;
+      notifyListeners();
       SnackBarService.instance
           .showSnackBarSuccess("Please check your mail for reset link");
       return true;
