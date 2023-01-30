@@ -187,14 +187,15 @@ class _DepositeToUserWalletScreenState
                       title: 'Do you want to submit?',
                       autoDismiss: false,
                       desc:
-                          'You are about to submit a transaction record of $rupeeSymbol ${_amountCtrl.text}, which can not be reversed.',
+                          'You are about to submit a transaction record of $rupeeSymbol ${currencyFormatter.format(double.parse(_amountCtrl.text))}, which can not be reversed.',
                       btnCancelOnPress: () {
                         context.pop();
                       },
                       btnOkOnPress: () async {
                         FocusManager.instance.primaryFocus?.unfocus();
 
-                        if (!isFloat(_amountCtrl.text)) {
+                        if (_amountCtrl.text.isEmpty ||
+                            !isFloat(_amountCtrl.text)) {
                           SnackBarService.instance
                               .showSnackBarError('Amount is invalid');
                           context.pop();
@@ -233,7 +234,7 @@ class _DepositeToUserWalletScreenState
                               status: PaymentStatus.pending.name,
                               transactionActivity: [
                                 TransactionActivityModel(
-                                  comment: 'Transaction Posted',
+                                  comment: 'Depost to user wallet',
                                   createdAt: DateTime.now(),
                                 )
                               ],

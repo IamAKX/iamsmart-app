@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:iamsmart/model/user_profile.dart';
+import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/util/preference_key.dart';
 
 import 'package:iamsmart/util/router.dart';
 import 'package:iamsmart/util/theme.dart';
@@ -16,6 +19,14 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (prefs.containsKey(PreferenceKey.user)) {
+    UserProfile userProfile =
+        UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    await DBService.instance.updateLastLoginTime(userProfile.id!);
+    UserProfile updatedProfile =
+        await DBService.instance.getUserById(userProfile.id!);
+    prefs.setString(PreferenceKey.user, updatedProfile.toJson());
+  }
   runApp(const MyApp());
 }
 
