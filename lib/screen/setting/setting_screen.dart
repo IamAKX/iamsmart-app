@@ -96,10 +96,10 @@ class _SettingScreenState extends State<SettingScreen> {
                               StorageService.uploadProfileImage(imageFile,
                                       'profile_image.${image.name.split('.')[1]}')
                                   .then((imageUrl) async {
-                                await DBService.instance.updateProfile(
-                                    userProfile.id!, {
-                                  'profileImage': imageUrl
-                                }).then((value) async {
+                                await DBService.instance
+                                    .updateProfile(userProfile.id!,
+                                        {'profileImage': imageUrl}, context)
+                                    .then((value) async {
                                   await DBService.instance
                                       .getUserById(userProfile.id!)
                                       .then((updatedProfile) {
