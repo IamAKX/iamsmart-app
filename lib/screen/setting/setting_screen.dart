@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +9,10 @@ import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
+import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/storage_service.dart';
 import 'package:iamsmart/util/preference_key.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_provider.dart';
@@ -26,12 +31,14 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   bool isBiometricEnabled = false;
   late AuthProvider _auth;
-  UserProfile userProfile =
-      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+  late UserProfile userProfile;
+  bool isImageUploading = false;
+
   @override
   Widget build(BuildContext context) {
     _auth = Provider.of<AuthProvider>(context);
     SnackBarService.instance.buildContext = context;
+    userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'Settings'),
@@ -49,7 +56,7 @@ class _SettingScreenState extends State<SettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(80.0),
                 child: CachedNetworkImage(
                   imageUrl: userProfile.profileImage ?? '',
                   width: 80,
@@ -74,11 +81,48 @@ class _SettingScreenState extends State<SettingScreen> {
                     userProfile.name ?? '',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  Text(
-                    'Edit picture',
-                    style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                          color: primaryColorDark,
-                        ),
+                  InkWell(
+                    onTap: isImageUploading
+                        ? null
+                        : () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              File imageFile = File(image.path);
+                              setState(() {
+                                isImageUploading = true;
+                              });
+                              StorageService.uploadProfileImage(imageFile,
+                                      'profile_image.${image.name.split('.')[1]}')
+                                  .then((imageUrl) async {
+                                await DBService.instance.updateProfile(
+                                    userProfile.id!, {
+                                  'profileImage': imageUrl
+                                }).then((value) async {
+                                  await DBService.instance
+                                      .getUserById(userProfile.id!)
+                                      .then((updatedProfile) {
+                                    prefs.setString(PreferenceKey.user,
+                                        updatedProfile.toJson());
+                                    setState(() {
+                                      isImageUploading = false;
+                                    });
+                                  });
+                                });
+                              });
+                            }
+                          },
+                    child: Text(
+                      isImageUploading
+                          ? 'Uploading image, please wait...'
+                          : 'Edit picture',
+                      style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                            color: isImageUploading
+                                ? Colors.orange
+                                : primaryColorDark,
+                          ),
+                    ),
                   ),
                 ],
               ),

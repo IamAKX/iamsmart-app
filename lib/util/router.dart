@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/main.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_details.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_screen.dart';
 import 'package:iamsmart/screen/depositToUserWallet/deposit_to_user_wallet_screen.dart';
@@ -12,6 +14,7 @@ import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
 import 'package:iamsmart/screen/transaction/transaction_detail_screen.dart';
 import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen.dart';
+import 'package:iamsmart/util/preference_key.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -94,5 +97,13 @@ final GoRouter router = GoRouter(
       },
     ),
   ],
-  initialLocation: LoginScreen.loginRoute,
+  initialLocation: getInitialRoute(),
 );
+
+String getInitialRoute() {
+  if (FirebaseAuth.instance.currentUser != null &&
+      prefs.containsKey(PreferenceKey.user)) {
+    return MainContainer.mainContainerRoute;
+  }
+  return LoginScreen.loginRoute;
+}

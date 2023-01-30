@@ -30,4 +30,9 @@ class DBService {
 
     return user;
   }
+
+  Future<void> updateProfile(
+      String userId, Map<String, dynamic> profileData) async {
+    await _db.collection(userCollection).doc(userId).update(profileData);
+  }
 }
