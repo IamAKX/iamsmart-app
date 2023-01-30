@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'dart:math';
-
+import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/user_profile.dart';
@@ -45,5 +44,16 @@ class StorageService {
     linkMap['kycDocumentImageBack'] = downloadLink;
 
     return linkMap;
+  }
+
+  static Future<String> uploadTransactionProof(File file) async {
+    UserProfile profile =
+        UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    String path = 'transactionProof/${profile.email}/${basename(file.path)}';
+    final ref = FirebaseStorage.instance.ref().child(path);
+    UploadTask? uploadTask = ref.putFile(file);
+    final snapshot = await uploadTask.whenComplete(() {});
+    final downloadLink = await snapshot.ref.getDownloadURL();
+    return downloadLink;
   }
 }

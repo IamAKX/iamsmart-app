@@ -22,6 +22,8 @@ class UserProfile {
   double? aiWalletBalance;
   DateTime? lastLogin;
   DateTime? createdAt;
+  double? latitude;
+  double? longitude;
   UserProfile({
     this.id,
     this.name,
@@ -42,6 +44,8 @@ class UserProfile {
     this.aiWalletBalance,
     this.lastLogin,
     this.createdAt,
+    this.latitude,
+    this.longitude,
   });
 
   UserProfile copyWith({
@@ -64,6 +68,8 @@ class UserProfile {
     double? aiWalletBalance,
     DateTime? lastLogin,
     DateTime? createdAt,
+    double? latitude,
+    double? longitude,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -86,6 +92,8 @@ class UserProfile {
       aiWalletBalance: aiWalletBalance ?? this.aiWalletBalance,
       lastLogin: lastLogin ?? this.lastLogin,
       createdAt: createdAt ?? this.createdAt,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
     );
   }
 
@@ -110,6 +118,8 @@ class UserProfile {
       'aiWalletBalance': aiWalletBalance,
       'lastLogin': lastLogin?.millisecondsSinceEpoch,
       'createdAt': createdAt?.millisecondsSinceEpoch,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 
@@ -138,6 +148,8 @@ class UserProfile {
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
+      latitude: map['latitude']?.toDouble(),
+      longitude: map['longitude']?.toDouble(),
     );
   }
 
@@ -148,7 +160,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude)';
   }
 
   @override
@@ -174,7 +186,9 @@ class UserProfile {
         other.userWalletBalance == userWalletBalance &&
         other.aiWalletBalance == aiWalletBalance &&
         other.lastLogin == lastLogin &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.latitude == latitude &&
+        other.longitude == longitude;
   }
 
   @override
@@ -197,6 +211,8 @@ class UserProfile {
         userWalletBalance.hashCode ^
         aiWalletBalance.hashCode ^
         lastLogin.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        latitude.hashCode ^
+        longitude.hashCode;
   }
 }

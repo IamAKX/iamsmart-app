@@ -1,13 +1,17 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/model/transaction_model.dart';
 import 'package:iamsmart/model/user_profile.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DBService {
   static DBService instance = DBService();
   late FirebaseFirestore _db;
   String userCollection = 'users';
+  String txnCollection = 'transactions';
 
   DBService() {
     _db = FirebaseFirestore.instance;
@@ -18,10 +22,16 @@ class DBService {
   }
 
   Future<void> updateLastLoginTime(String userId) async {
-    await _db
-        .collection(userCollection)
-        .doc(userId)
-        .update({'lastLogin': Timestamp.now().millisecondsSinceEpoch});
+    Map<String, dynamic> map = {
+      'lastLogin': Timestamp.now().millisecondsSinceEpoch,
+    };
+    if (await Permission.camera.request().isGranted) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      map['latitude'] = position.latitude;
+      map['longitude'] = position.longitude;
+    }
+    await _db.collection(userCollection).doc(userId).update(map);
   }
 
   Future<UserProfile> getUserById(String userId) async {
@@ -55,5 +65,11 @@ class DBService {
         btnOkText: 'Okay',
       ).show();
     });
+  }
+
+  Future<void> addTransaction(TransactionModel txn) async {
+    var ref = _db.collection(txnCollection).doc();
+    txn.id = ref.id;
+    await ref.set(txn.toMap());
   }
 }

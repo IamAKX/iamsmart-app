@@ -2,14 +2,18 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/main.dart';
+import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_screen.dart';
 import 'package:iamsmart/screen/depositToUserWallet/deposit_to_user_wallet_screen.dart';
 import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/widget/heading.dart';
 
+import '../../service/snakbar_service.dart';
 import '../transaction/transaction_detail_screen.dart';
 
 class AssetsScreen extends StatefulWidget {
@@ -26,6 +30,8 @@ class AssetsScreen extends StatefulWidget {
 class _AssetsScreenState extends State<AssetsScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  UserProfile userProfile =
+      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
 
   @override
   void initState() {
@@ -41,6 +47,7 @@ class _AssetsScreenState extends State<AssetsScreen>
 
   @override
   Widget build(BuildContext context) {
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'Assets'),
@@ -209,7 +216,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                   Positioned(
                     top: 20,
                     child: Text(
-                      '$rupeeSymbol ${currencyFormatter.format(195639.57)}',
+                      '$rupeeSymbol ${currencyFormatter.format(userProfile.userWalletBalance)}',
                       style: Theme.of(context)
                           .textTheme
                           .headline4
@@ -220,7 +227,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     bottom: 10,
                     left: 1,
                     child: Text(
-                      'Wallet ID : xxiaksehakkkl/UW',
+                      'Wallet ID : ${userProfile.id!.substring(0, 10)}/UW',
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -328,7 +335,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                   Positioned(
                     top: 20,
                     child: Text(
-                      '$rupeeSymbol ${currencyFormatter.format(27890.87)}',
+                      '$rupeeSymbol ${currencyFormatter.format(userProfile.aiWalletBalance)}',
                       style: Theme.of(context)
                           .textTheme
                           .headline4
@@ -339,7 +346,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     bottom: 10,
                     left: 1,
                     child: Text(
-                      'Wallet ID : xxiaksehakkkl/AIW',
+                      'Wallet ID : ${userProfile.id!.substring(0, 10)}/AIW',
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge

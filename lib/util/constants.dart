@@ -19,3 +19,17 @@ String loremIpsum =
 
 const String defaultProfileImage =
     'https://firebasestorage.googleapis.com/v0/b/iamsmart-d3a89.appspot.com/o/profileImage%2Fuser.png?alt=media&token=594fe065-73c8-43f6-a82e-b3e6384d736d';
+
+enum PaymentStatus {
+  pending,
+  approved,
+  rejected,
+  transfered,
+  invested,
+  withdrawn
+}
+
+enum Party { userExternal, userWallet, aiWallet, admin }
+
+String depositToUserWalletPrompt =
+    'Deposited amount can take upto 3 working days to get approved';

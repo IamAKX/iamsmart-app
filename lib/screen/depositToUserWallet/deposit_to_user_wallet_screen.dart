@@ -1,15 +1,25 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search2/dropdown_search2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/main.dart';
+import 'package:iamsmart/model/transaction_activity_model.dart';
+import 'package:iamsmart/model/transaction_model.dart';
+import 'package:iamsmart/model/user_profile.dart';
+import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/snakbar_service.dart';
+import 'package:iamsmart/service/storage_service.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/widget/custom_textfield.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:string_validator/string_validator.dart';
 
 import '../../widget/button_active.dart';
 import '../../widget/heading.dart';
@@ -29,11 +39,15 @@ class _DepositeToUserWalletScreenState
   final TextEditingController _amountCtrl = TextEditingController();
   String _selectedPaymentMode = '';
   bool isImageSelected = false;
-  late File? imageFile;
+  File? imageFile;
   bool isAgreementChecked = false;
+  bool isPostingTransaction = false;
+  UserProfile userProfile =
+      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
 
   @override
   Widget build(BuildContext context) {
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'Deposit'),
@@ -51,7 +65,7 @@ class _DepositeToUserWalletScreenState
               Padding(
                 padding: const EdgeInsets.all(defaultPadding),
                 child: Text(
-                  'Deposited amount can take upto 3 working days to get approved',
+                  depositToUserWalletPrompt,
                   style: Theme.of(context).textTheme.caption,
                 ),
               ),
@@ -173,23 +187,104 @@ class _DepositeToUserWalletScreenState
                       title: 'Do you want to submit?',
                       autoDismiss: false,
                       desc:
-                          'You are about to submit a transaction record, which can not be reversed.',
+                          'You are about to submit a transaction record of $rupeeSymbol ${_amountCtrl.text}, which can not be reversed.',
                       btnCancelOnPress: () {
                         context.pop();
                       },
-                      btnOkOnPress: () {
+                      btnOkOnPress: () async {
+                        FocusManager.instance.primaryFocus?.unfocus();
+
+                        if (!isFloat(_amountCtrl.text)) {
+                          SnackBarService.instance
+                              .showSnackBarError('Amount is invalid');
+                          context.pop();
+                          return;
+                        }
+                        if (_selectedPaymentMode.isEmpty) {
+                          SnackBarService.instance
+                              .showSnackBarError('Payment is not selected');
+                          context.pop();
+                          return;
+                        }
+                        if (imageFile == null) {
+                          SnackBarService.instance.showSnackBarError(
+                              'Select transaction proof image');
+                          context.pop();
+                          return;
+                        }
+                        if (!isAgreementChecked) {
+                          SnackBarService.instance.showSnackBarError(
+                              'Please check the agreement checkbox');
+                          context.pop();
+                          return;
+                        }
                         context.pop();
+                        setState(() {
+                          isPostingTransaction = true;
+                        });
+
+                        await StorageService.uploadTransactionProof(imageFile!)
+                            .then((fileDownloadUrl) async {
+                          TransactionModel txn = TransactionModel(
+                              amount: double.parse(_amountCtrl.text),
+                              assignedTo: Party.admin.name,
+                              creditParty: Party.userWallet.name,
+                              debitParty: Party.userExternal.name,
+                              status: PaymentStatus.pending.name,
+                              transactionActivity: [
+                                TransactionActivityModel(
+                                  comment: 'Transaction Posted',
+                                  createdAt: DateTime.now(),
+                                )
+                              ],
+                              transactionMode: _selectedPaymentMode,
+                              userId: userProfile.id,
+                              transactionScreenshot: fileDownloadUrl,
+                              createdAt: DateTime.now());
+
+                          await DBService.instance
+                              .addTransaction(txn)
+                              .then((value) {
+                            setState(() {
+                              isPostingTransaction = false;
+                            });
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.success,
+                              animType: AnimType.bottomSlide,
+                              title: 'Success',
+                              autoDismiss: false,
+                              desc: depositToUserWalletPrompt,
+                              btnOkOnPress: () {
+                                resetFields();
+                                setState(() {});
+                                context.pop();
+                              },
+                              onDismissCallback: (type) {},
+                              btnOkText: 'Okay',
+                            ).show();
+                          });
+                        });
                       },
                       onDismissCallback: (type) {},
                       btnOkText: 'Submit',
                       btnCancelText: 'Cancel')
                   .show();
             },
+            isDisabled: isPostingTransaction,
             label: 'Proceed'),
         const SizedBox(
           height: defaultPadding,
         ),
       ],
     );
+  }
+
+  void resetFields() {
+    isImageSelected = false;
+    _amountCtrl.text = '';
+    _selectedPaymentMode = '';
+    isAgreementChecked = false;
+    imageFile = null;
   }
 }

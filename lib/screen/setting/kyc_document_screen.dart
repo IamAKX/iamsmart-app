@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dropdown_search2/dropdown_search2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/service/db_service.dart';
@@ -11,6 +12,7 @@ import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/widget/button_active.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../service/snakbar_service.dart';
 import '../../util/colors.dart';
@@ -233,8 +235,16 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
                   UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
               userProfile.kycDocumentType = _kycDocumentType;
               userProfile.kycId = _kycNumber.text;
+              if (await Permission.camera.request().isGranted) {
+                Position position = await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.high);
+                userProfile.latitude = position.latitude;
+                userProfile.longitude = position.longitude;
+              }
               userProfile.kycDocumentImageBack = map['kycDocumentImageBack'];
               userProfile.kycDocumentImageFront = map['kycDocumentImageFront'];
+
+              // ignore: use_build_context_synchronously
               await DBService.instance
                   .updateProfile(userProfile.id!, userProfile.toMap(), context);
             });

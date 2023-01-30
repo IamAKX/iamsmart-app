@@ -1,7 +1,5 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/service/db_service.dart';
