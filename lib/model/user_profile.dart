@@ -9,7 +9,8 @@ class UserProfile {
   String? profileImage;
   String? kycDocumentType;
   String? kycId;
-  String? kycDocumentImage;
+  String? kycDocumentImageFront;
+  String? kycDocumentImageBack;
   String? bankAccountName;
   String? bankIFSCCode;
   String? bankAccountNumber;
@@ -19,8 +20,8 @@ class UserProfile {
   bool? isKycDone;
   double? userWalletBalance;
   double? aiWalletBalance;
-  Timestamp? lastLogin;
-  Timestamp? createdAt;
+  DateTime? lastLogin;
+  DateTime? createdAt;
   UserProfile({
     this.id,
     this.name,
@@ -28,7 +29,8 @@ class UserProfile {
     this.profileImage,
     this.kycDocumentType,
     this.kycId,
-    this.kycDocumentImage,
+    this.kycDocumentImageFront,
+    this.kycDocumentImageBack,
     this.bankAccountName,
     this.bankIFSCCode,
     this.bankAccountNumber,
@@ -49,7 +51,8 @@ class UserProfile {
     String? profileImage,
     String? kycDocumentType,
     String? kycId,
-    String? kycDocumentImage,
+    String? kycDocumentImageFront,
+    String? kycDocumentImageBack,
     String? bankAccountName,
     String? bankIFSCCode,
     String? bankAccountNumber,
@@ -59,8 +62,8 @@ class UserProfile {
     bool? isKycDone,
     double? userWalletBalance,
     double? aiWalletBalance,
-    Timestamp? lastLogin,
-    Timestamp? createdAt,
+    DateTime? lastLogin,
+    DateTime? createdAt,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -69,7 +72,9 @@ class UserProfile {
       profileImage: profileImage ?? this.profileImage,
       kycDocumentType: kycDocumentType ?? this.kycDocumentType,
       kycId: kycId ?? this.kycId,
-      kycDocumentImage: kycDocumentImage ?? this.kycDocumentImage,
+      kycDocumentImageFront:
+          kycDocumentImageFront ?? this.kycDocumentImageFront,
+      kycDocumentImageBack: kycDocumentImageBack ?? this.kycDocumentImageBack,
       bankAccountName: bankAccountName ?? this.bankAccountName,
       bankIFSCCode: bankIFSCCode ?? this.bankIFSCCode,
       bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
@@ -92,7 +97,8 @@ class UserProfile {
       'profileImage': profileImage,
       'kycDocumentType': kycDocumentType,
       'kycId': kycId,
-      'kycDocumentImage': kycDocumentImage,
+      'kycDocumentImageFront': kycDocumentImageFront,
+      'kycDocumentImageBack': kycDocumentImageBack,
       'bankAccountName': bankAccountName,
       'bankIFSCCode': bankIFSCCode,
       'bankAccountNumber': bankAccountNumber,
@@ -115,7 +121,8 @@ class UserProfile {
       profileImage: map['profileImage'],
       kycDocumentType: map['kycDocumentType'],
       kycId: map['kycId'],
-      kycDocumentImage: map['kycDocumentImage'],
+      kycDocumentImageFront: map['kycDocumentImageFront'],
+      kycDocumentImageBack: map['kycDocumentImageBack'],
       bankAccountName: map['bankAccountName'],
       bankIFSCCode: map['bankIFSCCode'],
       bankAccountNumber: map['bankAccountNumber'],
@@ -126,10 +133,10 @@ class UserProfile {
       userWalletBalance: map['userWalletBalance']?.toDouble(),
       aiWalletBalance: map['aiWalletBalance']?.toDouble(),
       lastLogin: map['lastLogin'] != null
-          ? Timestamp.fromMillisecondsSinceEpoch(map['lastLogin'])
+          ? DateTime.fromMillisecondsSinceEpoch(map['lastLogin'])
           : null,
       createdAt: map['createdAt'] != null
-          ? Timestamp.fromMillisecondsSinceEpoch(map['createdAt'])
+          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
     );
   }
@@ -141,7 +148,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImage: $kycDocumentImage, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt)';
   }
 
   @override
@@ -155,7 +162,8 @@ class UserProfile {
         other.profileImage == profileImage &&
         other.kycDocumentType == kycDocumentType &&
         other.kycId == kycId &&
-        other.kycDocumentImage == kycDocumentImage &&
+        other.kycDocumentImageFront == kycDocumentImageFront &&
+        other.kycDocumentImageBack == kycDocumentImageBack &&
         other.bankAccountName == bankAccountName &&
         other.bankIFSCCode == bankIFSCCode &&
         other.bankAccountNumber == bankAccountNumber &&
@@ -177,7 +185,8 @@ class UserProfile {
         profileImage.hashCode ^
         kycDocumentType.hashCode ^
         kycId.hashCode ^
-        kycDocumentImage.hashCode ^
+        kycDocumentImageFront.hashCode ^
+        kycDocumentImageBack.hashCode ^
         bankAccountName.hashCode ^
         bankIFSCCode.hashCode ^
         bankAccountNumber.hashCode ^

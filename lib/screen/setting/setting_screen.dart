@@ -36,9 +36,11 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _auth = Provider.of<AuthProvider>(context);
     SnackBarService.instance.buildContext = context;
-    userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    _auth = Provider.of<AuthProvider>(context);
+    if (prefs.containsKey(PreferenceKey.user)) {
+      userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'Settings'),
@@ -213,9 +215,10 @@ class _SettingScreenState extends State<SettingScreen> {
             size: 15,
           ),
           onTap: () {
-            _auth
-                .logoutUser()
-                .then((value) => context.go(LoginScreen.loginRoute));
+            _auth.logoutUser().then((value) {
+              context.go(LoginScreen.loginRoute);
+              prefs.clear();
+            });
           },
         ),
       ],

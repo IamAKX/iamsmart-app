@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:dropdown_search2/dropdown_search2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iamsmart/main.dart';
+import 'package:iamsmart/model/user_profile.dart';
+import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/storage_service.dart';
 import 'package:iamsmart/util/constants.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/widget/button_active.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../service/snakbar_service.dart';
 import '../../util/colors.dart';
 import '../../util/theme.dart';
 import '../../widget/custom_textfield.dart';
@@ -22,11 +28,16 @@ class KycDocumentScreen extends StatefulWidget {
 class _KycDocumentScreenState extends State<KycDocumentScreen> {
   String _kycDocumentType = '';
   final TextEditingController _kycNumber = TextEditingController();
-  bool isImageSelected = false;
-  late File? imageFile;
+  bool isImageSelectedFront = false;
+  late File? imageFileFront;
+  bool isImageSelectedBack = false;
+  late File? imageFileBack;
+  bool isSaving = false;
+  String extension = '';
 
   @override
   Widget build(BuildContext context) {
+    SnackBarService.instance.buildContext = context;
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'KYC Details'),
@@ -59,80 +70,180 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
         CustomTextField(
             hint: 'ID Number',
             controller: _kycNumber,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.name,
             obscure: false,
             icon: FontAwesomeIcons.userShield),
-        const Padding(
-          padding: EdgeInsets.only(
-            left: defaultPadding,
-            right: defaultPadding,
-            top: defaultPadding,
-          ),
-          child: Text(
-            'Please attched the KYC Document image',
+        const Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: defaultPadding,
+              right: defaultPadding,
+              top: defaultPadding,
+              bottom: defaultPadding,
+            ),
+            child: Text(
+              'Please attched the KYC Document image',
+            ),
           ),
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: const EdgeInsets.all(defaultPadding),
-            height: 200,
-            width: 200,
-            child: !isImageSelected
-                ? InkWell(
-                    child: Image.asset(
-                      'assets/image/add-image.png',
-                    ),
-                    onTap: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? image =
-                          await picker.pickImage(source: ImageSource.gallery);
-                      if (image != null) {
-                        imageFile = File(image.path);
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SizedBox(
+              height: 100,
+              width: 150,
+              child: !isImageSelectedFront
+                  ? InkWell(
+                      child: Image.asset(
+                        'assets/image/add-image.png',
+                      ),
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                          imageFileFront = File(image.path);
 
-                        setState(() {
-                          isImageSelected = true;
-                        });
-                      }
-                    },
-                  )
-                : SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: Stack(
-                      children: [
-                        Image.file(
-                          imageFile!,
-                          height: 200,
-                          width: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          right: 1,
-                          top: 1,
-                          child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  imageFile = null;
-                                  isImageSelected = false;
-                                });
-                              },
-                              icon: const Icon(
-                                FontAwesomeIcons.trash,
-                                color: Colors.red,
-                              )),
-                        )
-                      ],
+                          setState(() {
+                            isImageSelectedFront = true;
+                          });
+                        }
+                      },
+                    )
+                  : SizedBox(
+                      height: 100,
+                      width: 150,
+                      child: Stack(
+                        children: [
+                          Image.file(
+                            imageFileFront!,
+                            height: 100,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            right: 1,
+                            top: 1,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    imageFileFront = null;
+                                    isImageSelectedFront = false;
+                                  });
+                                },
+                                icon: const Icon(
+                                  FontAwesomeIcons.trash,
+                                  color: Colors.red,
+                                )),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-          ),
+            ),
+            SizedBox(
+              height: 100,
+              width: 150,
+              child: !isImageSelectedBack
+                  ? InkWell(
+                      child: Image.asset(
+                        'assets/image/add-image.png',
+                      ),
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                          imageFileBack = File(image.path);
+                          extension = image.name.split('.')[1];
+                          setState(() {
+                            isImageSelectedBack = true;
+                          });
+                        }
+                      },
+                    )
+                  : SizedBox(
+                      height: 100,
+                      width: 150,
+                      child: Stack(
+                        children: [
+                          Image.file(
+                            imageFileBack!,
+                            height: 100,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            right: 1,
+                            top: 1,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    imageFileBack = null;
+                                    isImageSelectedBack = false;
+                                  });
+                                },
+                                icon: const Icon(
+                                  FontAwesomeIcons.trash,
+                                  color: Colors.red,
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: defaultPadding / 2,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: const [
+            Text(
+              'Front Side',
+            ),
+            Text(
+              'Back Side',
+            ),
+          ],
         ),
         const SizedBox(
           height: defaultPadding,
         ),
         ActiveButton(
-          onPressed: () {},
+          onPressed: () async {
+            if (_kycDocumentType.isEmpty ||
+                _kycNumber.text.isEmpty ||
+                imageFileBack == null ||
+                imageFileFront == null) {
+              SnackBarService.instance
+                  .showSnackBarError('All fields are mandatory');
+              return;
+            }
+            setState(() {
+              isSaving = true;
+            });
+            await StorageService.uploadKycDocuments(imageFileFront!,
+                    imageFileBack!, _kycDocumentType, extension)
+                .then((map) async {
+              UserProfile userProfile =
+                  UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+              userProfile.kycDocumentType = _kycDocumentType;
+              userProfile.kycId = _kycNumber.text;
+              userProfile.kycDocumentImageBack = map['kycDocumentImageBack'];
+              userProfile.kycDocumentImageFront = map['kycDocumentImageFront'];
+              await DBService.instance
+                  .updateProfile(userProfile.id!, userProfile.toMap(), context);
+            });
+            setState(() {
+              isSaving = false;
+            });
+          },
           label: 'Update',
+          isDisabled: isSaving,
         )
       ],
     );

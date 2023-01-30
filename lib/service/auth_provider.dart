@@ -45,7 +45,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _auth.signOut();
       user = null;
-      prefs.clear();
+
       status = AuthStatus.notAuthenticated;
     } catch (e) {
       SnackBarService.instance.showSnackBarError("Error Logging Out");
@@ -124,7 +124,8 @@ class AuthProvider extends ChangeNotifier {
         profileImage: defaultProfileImage,
         kycDocumentType: '',
         kycId: '',
-        kycDocumentImage: '',
+        kycDocumentImageFront: '',
+        kycDocumentImageBack: '',
         bankAccountName: '',
         bankIFSCCode: '',
         bankAccountNumber: '',
@@ -134,8 +135,8 @@ class AuthProvider extends ChangeNotifier {
         isKycDone: false,
         userWalletBalance: 0.0,
         aiWalletBalance: 0.0,
-        lastLogin: Timestamp.now(),
-        createdAt: Timestamp.now(),
+        lastLogin: DateTime.now(),
+        createdAt: DateTime.now(),
       );
       await DBService.instance.createUser(userProfile).then(
           (value) => prefs.setString(PreferenceKey.user, userProfile.toJson()));
