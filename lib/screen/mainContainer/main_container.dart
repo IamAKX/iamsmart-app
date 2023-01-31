@@ -31,13 +31,13 @@ class _MainContainerState extends State<MainContainer> {
         activeColor: bottomNavbarActiveColor,
         inactiveColor: bottomNavbarInactiveColor),
     FlashyTabBarItem(
-        icon: const Icon(FontAwesomeIcons.newspaper),
-        title: const Text('Explore'),
+        icon: const Icon(FontAwesomeIcons.star),
+        title: const Text('Reward'),
         activeColor: bottomNavbarActiveColor,
         inactiveColor: bottomNavbarInactiveColor),
     FlashyTabBarItem(
-        icon: const Icon(FontAwesomeIcons.gear),
-        title: const Text('Settings'),
+        icon: const Icon(FontAwesomeIcons.user),
+        title: const Text('Profile'),
         activeColor: bottomNavbarActiveColor,
         inactiveColor: bottomNavbarInactiveColor),
   ];

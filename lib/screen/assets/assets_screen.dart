@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -50,7 +51,65 @@ class _AssetsScreenState extends State<AssetsScreen>
     SnackBarService.instance.buildContext = context;
     return Scaffold(
       appBar: AppBar(
-        title: const Heading(title: 'Assets'),
+        title: InkWell(
+          onTap: () => widget.switchTab(3),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(homePageUserIconSize),
+                child: CachedNetworkImage(
+                  imageUrl: userProfile.profileImage ?? '',
+                  width: homePageUserIconSize,
+                  height: homePageUserIconSize,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/image/user.png',
+                    width: homePageUserIconSize,
+                    height: homePageUserIconSize,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: defaultPadding / 2,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Hello ${userProfile.name?.split(' ')[0]}!',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  // Text(
+                  //   '${userProfile.email}',
+                  //   style: Theme.of(context).textTheme.caption,
+                  // ),
+                ],
+              )
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              FontAwesomeIcons.bell,
+              color: bottomNavbarActiveColor,
+              size: 20,
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              FontAwesomeIcons.circleQuestion,
+              color: bottomNavbarActiveColor,
+              size: 20,
+            ),
+          )
+        ],
       ),
       body: getBody(),
     );

@@ -5,6 +5,7 @@ import 'colors.dart';
 
 const double defaultPadding = 20;
 const double bottomNavigationBarBorderRadius = 40;
+const double homePageUserIconSize = 30;
 
 ThemeData globalTheme(BuildContext context) {
   return ThemeData(

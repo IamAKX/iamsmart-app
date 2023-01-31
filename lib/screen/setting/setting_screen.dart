@@ -43,7 +43,7 @@ class _SettingScreenState extends State<SettingScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Heading(title: 'Settings'),
+        title: const Heading(title: 'Profile'),
       ),
       body: getBody(),
     );
