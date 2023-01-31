@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iamsmart/screen/assets/assets_screen.dart';
 import 'package:iamsmart/screen/explore/explore_screen.dart';
+import 'package:iamsmart/screen/reward/reward_screen.dart';
 import 'package:iamsmart/screen/setting/setting_screen.dart';
 import 'package:iamsmart/screen/transaction/transaction_screen.dart';
 import 'package:iamsmart/util/colors.dart';
@@ -53,7 +54,7 @@ class _MainContainerState extends State<MainContainer> {
       case 1:
         return const TransactionScreen();
       case 2:
-        return const ExploreScreen();
+        return const RewardScreen();
       case 3:
         return const SettingScreen();
     }

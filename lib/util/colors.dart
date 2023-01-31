@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iamsmart/util/constants.dart';
 
 const primaryColor = Color(0xFF29AAE2);
 const primaryColorDark = Color.fromARGB(255, 8, 127, 255);
@@ -15,6 +14,7 @@ const userWalletColorDark = Color(0xFF29AAE2);
 const userWalletColorLight = Color.fromARGB(255, 170, 226, 251);
 const aiWalletColorDark = Color(0xFF3451D4);
 const aiWalletColorLight = Color.fromARGB(255, 149, 168, 255);
+const rewardCardColor = Color(0xFF00337C);
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".

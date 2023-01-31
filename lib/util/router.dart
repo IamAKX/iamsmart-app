@@ -10,6 +10,7 @@ import 'package:iamsmart/screen/forgotPassword/forgot_password_screen.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
 import 'package:iamsmart/screen/mainContainer/main_container.dart';
 import 'package:iamsmart/screen/register/register_screen.dart';
+import 'package:iamsmart/screen/setting/change_password.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
 import 'package:iamsmart/screen/transaction/transaction_detail_screen.dart';
@@ -88,6 +89,12 @@ final GoRouter router = GoRouter(
       path: ProfileDetailScreen.profileDetailRoute,
       builder: (BuildContext context, GoRouterState state) {
         return const ProfileDetailScreen();
+      },
+    ),
+    GoRoute(
+      path: ChangePasswordScreen.changePasswordRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return const ChangePasswordScreen();
       },
     ),
     GoRoute(

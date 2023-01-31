@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
+import 'package:iamsmart/screen/setting/change_password.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
 import 'package:iamsmart/service/db_service.dart';
@@ -182,7 +183,9 @@ class _SettingScreenState extends State<SettingScreen> {
             FontAwesomeIcons.chevronRight,
             size: 15,
           ),
-          onTap: () {},
+          onTap: () {
+            context.push(ChangePasswordScreen.changePasswordRoute);
+          },
         ),
         SwitchListTile(
           value: isBiometricEnabled,

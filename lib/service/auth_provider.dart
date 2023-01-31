@@ -171,4 +171,28 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> updatePassword(String newPassword) async {
+    if (!isAlphanumeric(newPassword)) {
+      SnackBarService.instance
+          .showSnackBarError('Enter alpha numeric password');
+      return false;
+    }
+    status = AuthStatus.authenticating;
+    notifyListeners();
+    try {
+      bool res = false;
+      await user?.updatePassword(newPassword).then((value) {
+        res = true;
+      }).catchError((onError) {
+        res = false;
+      });
+      return res;
+    } on FirebaseAuthException catch (e) {
+      SnackBarService.instance.showSnackBarError(e.message!);
+      status = AuthStatus.error;
+      notifyListeners();
+      return false;
+    }
+  }
 }
