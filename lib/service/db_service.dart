@@ -72,4 +72,26 @@ class DBService {
     txn.id = ref.id;
     await ref.set(txn.toMap());
   }
+
+  Future<List<TransactionModel>> getAllTransactions(String userId) async {
+    List<TransactionModel> txnList = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(txnCollection)
+        .where('userId', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    txnList = querySnapshot.docs
+        .map((txn) => TransactionModel.fromMap(txn.data()))
+        .toList();
+    return txnList;
+  }
+
+  Future<TransactionModel> getTransactionById(String txnId) async {
+    TransactionModel txn = TransactionModel();
+    await _db.collection(txnCollection).doc(txnId).get().then((snapshot) {
+      txn = TransactionModel.fromMap(snapshot.data() ?? {});
+    });
+    return txn;
+  }
 }

@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/model/transaction_model.dart';
+import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/theme.dart';
+import 'package:iamsmart/util/utilities.dart';
 
 import '../../util/constants.dart';
 
@@ -18,6 +22,22 @@ class TransactionDetailScreen extends StatefulWidget {
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
+  TransactionModel? transaction;
+
+  @override
+  void initState() {
+    super.initState();
+    getTransactionDetail();
+  }
+
+  getTransactionDetail() async {
+    await DBService.instance.getTransactionById(widget.txnId).then((value) {
+      setState(() {
+        transaction = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +47,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   }
 
   getBody() {
+    if (transaction == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -55,7 +80,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 child: Hero(
                   tag: widget.txnId,
                   child: Text(
-                    '$rupeeSymbol ${currencyFormatter.format(10000 * (int.parse(widget.txnId) + 1))}',
+                    '$rupeeSymbol ${currencyFormatter.format(transaction?.amount)}',
                     style: Theme.of(context)
                         .textTheme
                         .headline4
@@ -66,7 +91,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                 child: Text(
-                  'Txn ID : hkjhiudsKJGEAH${widget.txnId}',
+                  'Txn ID : ${widget.txnId}',
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1
@@ -116,12 +141,48 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 const SizedBox(
                   height: defaultPadding,
                 ),
-                detailItem('Timestamp', '15 Jan,2023 23:11:34'),
-                detailItem('Status', 'Pending approval',
-                    valueColor: Colors.orange.withOpacity(0.7)),
-                detailItem('Payment Mode', 'IMPS'),
-                detailItem('Payment Proof', 'View image',
-                    valueColor: Colors.blue),
+                detailItem(
+                    'Timestamp', Utilities.formatDate(transaction!.createdAt!)),
+                detailItem('Status', transaction?.status ?? '',
+                    valueColor: getStatusColor(transaction?.status ?? '')),
+                detailItem('Payment Mode', transaction?.transactionMode ?? ''),
+                if (transaction!.transactionScreenshot?.isNotEmpty ?? false)
+                  InkWell(
+                    child: detailItem('Payment Proof', 'View image',
+                        valueColor: Colors.blue),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          Widget cancelButton = TextButton(
+                            child: const Text("Close"),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          );
+                          return AlertDialog(
+                            title: const Text('Transaction Proof'),
+                            actions: [cancelButton],
+                            content: CachedNetworkImage(
+                              imageUrl:
+                                  transaction?.transactionScreenshot ?? '',
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => Center(
+                                child: Text(
+                                  error.toString(),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                detailItem('Credit', transaction?.creditParty ?? ''),
+                detailItem('Debit', transaction?.debitParty ?? ''),
+                detailItem(
+                    'User Id', transaction?.userId?.substring(0, 10) ?? ''),
               ],
             ),
           ),

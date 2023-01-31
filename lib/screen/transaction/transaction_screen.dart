@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/screen/transaction/transaction_detail_screen.dart';
+import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/snakbar_service.dart';
+import 'package:iamsmart/util/utilities.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
+import '../../main.dart';
+import '../../model/transaction_model.dart';
+import '../../model/user_profile.dart';
 import '../../util/colors.dart';
 import '../../util/constants.dart';
+import '../../util/preference_key.dart';
 import '../../widget/heading.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -15,8 +23,44 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  List<TransactionModel> txnList = [];
+  List<TransactionModel> depositList = [];
+  List<TransactionModel> transferList = [];
+  List<TransactionModel> redeemList = [];
+  UserProfile userProfile =
+      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+
+  @override
+  void initState() {
+    super.initState();
+    getAllTxns();
+  }
+
+  void getAllTxns() async {
+    txnList = await DBService.instance.getAllTransactions(userProfile.id!);
+
+    depositList = txnList
+        .where((txn) =>
+            txn.debitParty! == Party.userExternal.name &&
+            txn.creditParty! == Party.userWallet.name)
+        .toList();
+    transferList = txnList
+        .where((txn) =>
+            txn.debitParty! == Party.userWallet.name &&
+            txn.creditParty! == Party.aiWallet.name)
+        .toList();
+    redeemList = txnList
+        .where((txn) =>
+            txn.debitParty! == Party.admin.name &&
+            txn.creditParty! == Party.userWallet.name)
+        .toList();
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    SnackBarService.instance.buildContext = context;
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -44,56 +88,51 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   all() {
+    if (txnList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Transaction',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
+
     return ListView.separated(
         itemBuilder: (context, index) => ListTile(
               leading: CircleAvatar(
                 backgroundColor: primaryColor.withOpacity(0.15),
                 child: Icon(
-                  index % 2 == 0
-                      ? FontAwesomeIcons.arrowRightFromBracket
-                      : index % 3 == 0
-                          ? FontAwesomeIcons.arrowRightToBracket
-                          : FontAwesomeIcons.arrowsLeftRight,
+                  Utilities.getIconForTransaction(txnList.elementAt(index)),
                   size: 18,
                   color: bottomNavbarActiveColor,
                 ),
               ),
               title: Text(
-                index % 2 == 0
-                    ? 'Deposit to User wallet'
-                    : index % 3 == 0
-                        ? 'Transfered to User Wallet'
-                        : 'Transfered to AI wallet',
+                txnList.elementAt(index).transactionActivity?.first.comment ??
+                    'Transaction',
               ),
               subtitle: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    index % 2 == 0
-                        ? 'Rejected'
-                        : index % 3 == 0
-                            ? 'Approved'
-                            : 'Pending',
+                    txnList.elementAt(index).status ?? '',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: index % 2 == 0
-                              ? Colors.red.withOpacity(0.7)
-                              : index % 3 == 0
-                                  ? Colors.green.withOpacity(0.7)
-                                  : Colors.orange.withOpacity(0.7),
+                          color: getStatusColor(
+                              txnList.elementAt(index).status ?? ''),
                         ),
                   ),
                   Text(
-                    '${index + 1} days ago',
+                    timeago.format(txnList.elementAt(index).createdAt!),
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
               ),
               isThreeLine: true,
               trailing: Hero(
-                tag: '$index',
+                tag: txnList.elementAt(index).id!,
                 child: Text(
-                  '$rupeeSymbol ${currencyFormatter.format(10000 * (index + 1))}',
+                  '$rupeeSymbol ${currencyFormatter.format(txnList.elementAt(index).amount)}',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -102,59 +141,65 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
               onTap: () => context.push(
                 TransactionDetailScreen.transactionDetailScreenRoute
-                    .replaceFirst(':txnId', '$index'),
+                    .replaceFirst(':txnId', txnList.elementAt(index).id!),
               ),
             ),
         separatorBuilder: (context, index) => const Divider(
               color: dividerColor,
               height: 1,
             ),
-        itemCount: 15);
+        itemCount: txnList.length);
   }
 
   redeem() {
+    if (redeemList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Transaction',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
     return ListView.separated(
         itemBuilder: (context, index) => ListTile(
               leading: CircleAvatar(
                 backgroundColor: primaryColor.withOpacity(0.15),
-                child: const Icon(
-                  FontAwesomeIcons.arrowRightToBracket,
+                child: Icon(
+                  Utilities.getIconForTransaction(redeemList.elementAt(index)),
                   size: 18,
                   color: bottomNavbarActiveColor,
                 ),
               ),
-              title: const Text(
-                'Transfered to User Wallet',
+              title: Text(
+                redeemList
+                        .elementAt(index)
+                        .transactionActivity
+                        ?.first
+                        .comment ??
+                    '',
               ),
               subtitle: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    index % 2 == 0
-                        ? 'Rejected'
-                        : index % 3 == 0
-                            ? 'Approved'
-                            : 'Pending',
+                    redeemList.elementAt(index).status ?? '',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: index % 2 == 0
-                              ? Colors.red.withOpacity(0.7)
-                              : index % 3 == 0
-                                  ? Colors.green.withOpacity(0.7)
-                                  : Colors.orange.withOpacity(0.7),
+                          color: getStatusColor(
+                              redeemList.elementAt(index).status ?? ''),
                         ),
                   ),
                   Text(
-                    '${index + 1} days ago',
+                    timeago.format(redeemList.elementAt(index).createdAt!),
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
               ),
               isThreeLine: true,
               trailing: Hero(
-                tag: '$index',
+                tag: redeemList.elementAt(index).id!,
                 child: Text(
-                  '$rupeeSymbol ${currencyFormatter.format(10000 * (index + 1))}',
+                  '$rupeeSymbol ${currencyFormatter.format(redeemList.elementAt(index).amount)}',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -163,59 +208,66 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
               onTap: () => context.push(
                 TransactionDetailScreen.transactionDetailScreenRoute
-                    .replaceFirst(':txnId', '$index'),
+                    .replaceFirst(':txnId', redeemList.elementAt(index).id!),
               ),
             ),
         separatorBuilder: (context, index) => const Divider(
               color: dividerColor,
               height: 1,
             ),
-        itemCount: 5);
+        itemCount: redeemList.length);
   }
 
   transfer() {
+    if (transferList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Transaction',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
     return ListView.separated(
         itemBuilder: (context, index) => ListTile(
               leading: CircleAvatar(
                 backgroundColor: primaryColor.withOpacity(0.15),
-                child: const Icon(
-                  FontAwesomeIcons.arrowsLeftRight,
+                child: Icon(
+                  Utilities.getIconForTransaction(
+                      transferList.elementAt(index)),
                   size: 18,
                   color: bottomNavbarActiveColor,
                 ),
               ),
-              title: const Text(
-                'Transfered to AI wallet',
+              title: Text(
+                transferList
+                        .elementAt(index)
+                        .transactionActivity
+                        ?.first
+                        .comment ??
+                    '',
               ),
               subtitle: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    index % 2 == 0
-                        ? 'Rejected'
-                        : index % 3 == 0
-                            ? 'Approved'
-                            : 'Pending',
+                    transferList.elementAt(index).status ?? '',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: index % 2 == 0
-                              ? Colors.red.withOpacity(0.7)
-                              : index % 3 == 0
-                                  ? Colors.green.withOpacity(0.7)
-                                  : Colors.orange.withOpacity(0.7),
+                          color: getStatusColor(
+                              transferList.elementAt(index).status ?? ''),
                         ),
                   ),
                   Text(
-                    '${index + 1} days ago',
+                    timeago.format(transferList.elementAt(index).createdAt!),
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
               ),
               isThreeLine: true,
               trailing: Hero(
-                tag: '$index',
+                tag: transferList.elementAt(index).id!,
                 child: Text(
-                  '$rupeeSymbol ${currencyFormatter.format(10000 * (index + 1))}',
+                  '$rupeeSymbol ${currencyFormatter.format(transferList.elementAt(index).amount)}',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -224,59 +276,64 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
               onTap: () => context.push(
                 TransactionDetailScreen.transactionDetailScreenRoute
-                    .replaceFirst(':txnId', '$index'),
+                    .replaceFirst(':txnId', transferList.elementAt(index).id!),
               ),
             ),
         separatorBuilder: (context, index) => const Divider(
               color: dividerColor,
               height: 1,
             ),
-        itemCount: 5);
+        itemCount: transferList.length);
   }
 
   deposit() {
+    if (depositList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Transaction',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
     return ListView.separated(
         itemBuilder: (context, index) => ListTile(
               leading: CircleAvatar(
                 backgroundColor: primaryColor.withOpacity(0.15),
-                child: const Icon(
-                  FontAwesomeIcons.arrowRightFromBracket,
+                child: Icon(
+                  Utilities.getIconForTransaction(depositList.elementAt(index)),
                   size: 18,
                   color: bottomNavbarActiveColor,
                 ),
               ),
-              title: const Text(
-                'Deposit to User wallet',
+              title: Text(
+                depositList
+                        .elementAt(index)
+                        .transactionActivity
+                        ?.first
+                        .comment ??
+                    '',
               ),
               subtitle: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    index % 2 == 0
-                        ? 'Rejected'
-                        : index % 3 == 0
-                            ? 'Approved'
-                            : 'Pending',
+                    depositList.elementAt(index).status ?? '',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: index % 2 == 0
-                              ? Colors.red.withOpacity(0.7)
-                              : index % 3 == 0
-                                  ? Colors.green.withOpacity(0.7)
-                                  : Colors.orange.withOpacity(0.7),
-                        ),
+                        color: getStatusColor(
+                            depositList.elementAt(index).status ?? '')),
                   ),
                   Text(
-                    '${index + 1} days ago',
+                    timeago.format(depositList.elementAt(index).createdAt!),
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
               ),
               isThreeLine: true,
               trailing: Hero(
-                tag: '$index',
+                tag: depositList.elementAt(index).id!,
                 child: Text(
-                  '$rupeeSymbol ${currencyFormatter.format(10000 * (index + 1))}',
+                  '$rupeeSymbol ${currencyFormatter.format(depositList.elementAt(index).amount!)}',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -285,13 +342,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
               onTap: () => context.push(
                 TransactionDetailScreen.transactionDetailScreenRoute
-                    .replaceFirst(':txnId', '$index'),
+                    .replaceFirst(':txnId', depositList.elementAt(index).id!),
               ),
             ),
         separatorBuilder: (context, index) => const Divider(
               color: dividerColor,
               height: 1,
             ),
-        itemCount: 5);
+        itemCount: depositList.length);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iamsmart/util/constants.dart';
 
 const primaryColor = Color(0xFF29AAE2);
 const primaryColorDark = Color.fromARGB(255, 8, 127, 255);
@@ -30,4 +31,23 @@ extension HexColor on Color {
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+Color getStatusColor(String status) {
+  switch (status) {
+    case 'approved':
+      return Colors.green;
+    case 'pending':
+      return Colors.orange;
+    case 'rejected':
+      return Colors.red;
+    case 'transfered':
+      return Colors.blue;
+    case 'invested':
+      return Colors.purple;
+    case 'withdrawn':
+      return Colors.deepPurpleAccent;
+    default:
+      return textColorDark;
+  }
 }
