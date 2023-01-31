@@ -12,7 +12,7 @@ class Utilities {
     }
     if (txn.debitParty == Party.userWallet.name &&
         txn.creditParty == Party.aiWallet.name) {
-      return FontAwesomeIcons.arrowRightToBracket;
+      return FontAwesomeIcons.arrowRightArrowLeft;
     }
     if (txn.debitParty == Party.admin.name &&
         txn.creditParty == Party.userWallet.name) {
