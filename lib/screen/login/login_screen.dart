@@ -1,13 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/screen/forgotPassword/forgot_password_screen.dart';
 import 'package:iamsmart/screen/mainContainer/main_container.dart';
 import 'package:iamsmart/screen/register/register_screen.dart';
+import 'package:iamsmart/service/local_auth_service.dart';
+import 'package:iamsmart/util/colors.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import '../../service/auth_provider.dart';
 import '../../service/snakbar_service.dart';
+import '../../util/preference_key.dart';
 import '../../util/theme.dart';
 import '../../widget/button_active.dart';
 import '../../widget/button_inactive.dart';
@@ -26,6 +31,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordCtrl = TextEditingController();
 
   late AuthProvider _auth;
+  bool showBiometricAuth = false;
+
+  checkBiometricAuth() async {
+    showBiometricAuth = (FirebaseAuth.instance.currentUser != null &&
+        prefs.containsKey(PreferenceKey.user) &&
+        await LocalAuthService.canAuthenticate() &&
+        (prefs.getBool(PreferenceKey.isBiometricEnabled) ?? false));
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkBiometricAuth();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Hero(
           tag: 'header',
           child: Container(
-            height: 230.0,
+            height: 180.0,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -127,6 +147,48 @@ class _LoginScreenState extends State<LoginScreen> {
               InactiveButton(
                   onPressed: () => context.go(RegisterScreen.registerRoute),
                   label: 'Create Account'),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+              if (showBiometricAuth)
+                Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () async {
+                      if (await LocalAuthService.authenticate()) {
+                        context.go(MainContainer.mainContainerRoute);
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        border: Border.all(
+                          width: 1,
+                          color: primaryColor,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                      child: const Icon(
+                        FontAwesomeIcons.fingerprint,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(
+                height: defaultPadding / 2,
+              ),
+              if (showBiometricAuth)
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Use biometric authentication',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ),
             ],
           ),
         ),

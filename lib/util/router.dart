@@ -108,9 +108,9 @@ final GoRouter router = GoRouter(
 );
 
 String getInitialRoute() {
-  if (FirebaseAuth.instance.currentUser != null &&
-      prefs.containsKey(PreferenceKey.user)) {
-    return MainContainer.mainContainerRoute;
-  }
+  // if (FirebaseAuth.instance.currentUser != null &&
+  //     prefs.containsKey(PreferenceKey.user)) {
+  //   return MainContainer.mainContainerRoute;
+  // }
   return LoginScreen.loginRoute;
 }

@@ -11,6 +11,7 @@ import 'package:iamsmart/screen/setting/change_password.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
 import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/local_auth_service.dart';
 import 'package:iamsmart/service/storage_service.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +31,8 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  bool isBiometricEnabled = false;
+  bool isBiometricEnabled =
+      prefs.getBool(PreferenceKey.isBiometricEnabled) ?? false;
   late AuthProvider _auth;
   late UserProfile userProfile;
   bool isImageUploading = false;
@@ -189,10 +191,14 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         SwitchListTile(
           value: isBiometricEnabled,
-          onChanged: (value) {
-            setState(() {
-              isBiometricEnabled = !isBiometricEnabled;
-            });
+          onChanged: (value) async {
+            if (await LocalAuthService.authenticate()) {
+              setState(() {
+                isBiometricEnabled = !isBiometricEnabled;
+                prefs.setBool(
+                    PreferenceKey.isBiometricEnabled, isBiometricEnabled);
+              });
+            }
           },
           title: const Text(
             'Enable biometric',
