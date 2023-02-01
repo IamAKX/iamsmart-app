@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class UserProfile {
   String? id;
@@ -24,6 +25,10 @@ class UserProfile {
   DateTime? createdAt;
   double? latitude;
   double? longitude;
+  int? setCount;
+  double? rewardBalance;
+  List<String>? referalList;
+  String? inviteCode;
   UserProfile({
     this.id,
     this.name,
@@ -46,6 +51,10 @@ class UserProfile {
     this.createdAt,
     this.latitude,
     this.longitude,
+    this.setCount,
+    this.rewardBalance,
+    this.referalList,
+    this.inviteCode,
   });
 
   UserProfile copyWith({
@@ -70,6 +79,10 @@ class UserProfile {
     DateTime? createdAt,
     double? latitude,
     double? longitude,
+    int? setCount,
+    double? rewardBalance,
+    List<String>? referalList,
+    String? inviteCode,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -94,6 +107,10 @@ class UserProfile {
       createdAt: createdAt ?? this.createdAt,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      setCount: setCount ?? this.setCount,
+      rewardBalance: rewardBalance ?? this.rewardBalance,
+      referalList: referalList ?? this.referalList,
+      inviteCode: inviteCode ?? this.inviteCode,
     );
   }
 
@@ -120,6 +137,10 @@ class UserProfile {
       'createdAt': createdAt?.millisecondsSinceEpoch,
       'latitude': latitude,
       'longitude': longitude,
+      'setCount': setCount,
+      'rewardBalance': rewardBalance,
+      'referalList': referalList,
+      'inviteCode': inviteCode,
     };
   }
 
@@ -150,6 +171,10 @@ class UserProfile {
           : null,
       latitude: map['latitude']?.toDouble(),
       longitude: map['longitude']?.toDouble(),
+      setCount: map['setCount']?.toInt(),
+      rewardBalance: map['rewardBalance']?.toDouble(),
+      referalList: List<String>.from(map['referalList']),
+      inviteCode: map['inviteCode'],
     );
   }
 
@@ -160,7 +185,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode)';
   }
 
   @override
@@ -188,7 +213,11 @@ class UserProfile {
         other.lastLogin == lastLogin &&
         other.createdAt == createdAt &&
         other.latitude == latitude &&
-        other.longitude == longitude;
+        other.longitude == longitude &&
+        other.setCount == setCount &&
+        other.rewardBalance == rewardBalance &&
+        listEquals(other.referalList, referalList) &&
+        other.inviteCode == inviteCode;
   }
 
   @override
@@ -213,6 +242,10 @@ class UserProfile {
         lastLogin.hashCode ^
         createdAt.hashCode ^
         latitude.hashCode ^
-        longitude.hashCode;
+        longitude.hashCode ^
+        setCount.hashCode ^
+        rewardBalance.hashCode ^
+        referalList.hashCode ^
+        inviteCode.hashCode;
   }
 }

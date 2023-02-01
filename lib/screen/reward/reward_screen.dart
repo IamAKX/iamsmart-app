@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/theme.dart';
+import 'package:iamsmart/widget/coming_soon.dart';
 
 import '../../widget/heading.dart';
 
@@ -19,7 +20,7 @@ class _RewardScreenState extends State<RewardScreen> {
       appBar: AppBar(
         title: const Heading(title: 'Reward'),
       ),
-      body: getBody(),
+      body: const ComingSoon(),
     );
   }
 

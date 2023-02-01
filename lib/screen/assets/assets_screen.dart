@@ -8,6 +8,7 @@ import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_screen.dart';
 import 'package:iamsmart/screen/depositToUserWallet/deposit_to_user_wallet_screen.dart';
 import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen.dart';
+import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/preference_key.dart';
@@ -34,10 +35,17 @@ class _AssetsScreenState extends State<AssetsScreen>
   UserProfile userProfile =
       UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
 
+  loadUserProfile() async {
+    userProfile = await DBService.instance.getUserById(userProfile.id!);
+    prefs.setString(PreferenceKey.user, userProfile.toJson());
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
+    loadUserProfile();
   }
 
   @override

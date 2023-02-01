@@ -25,7 +25,7 @@ class DBService {
     Map<String, dynamic> map = {
       'lastLogin': Timestamp.now().millisecondsSinceEpoch,
     };
-    if (await Permission.camera.request().isGranted) {
+    if (await Permission.location.request().isGranted) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       map['latitude'] = position.latitude;

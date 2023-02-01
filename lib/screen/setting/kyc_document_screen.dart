@@ -235,7 +235,7 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
                   UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
               userProfile.kycDocumentType = _kycDocumentType;
               userProfile.kycId = _kycNumber.text;
-              if (await Permission.camera.request().isGranted) {
+              if (await Permission.location.request().isGranted) {
                 Position position = await Geolocator.getCurrentPosition(
                     desiredAccuracy: LocationAccuracy.high);
                 userProfile.latitude = position.latitude;

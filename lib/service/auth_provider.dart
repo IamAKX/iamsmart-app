@@ -4,6 +4,7 @@ import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/service/snakbar_service.dart';
 import 'package:iamsmart/util/preference_key.dart';
+import 'package:iamsmart/util/utilities.dart';
 import 'package:string_validator/string_validator.dart';
 
 import '../util/constants.dart';
@@ -136,6 +137,12 @@ class AuthProvider extends ChangeNotifier {
         aiWalletBalance: 0.0,
         lastLogin: DateTime.now(),
         createdAt: DateTime.now(),
+        inviteCode: Utilities.generateInviteCode(),
+        latitude: 0,
+        longitude: 0,
+        referalList: [],
+        setCount: 0,
+        rewardBalance: 0.0,
       );
       await DBService.instance.createUser(userProfile).then(
           (value) => prefs.setString(PreferenceKey.user, userProfile.toJson()));
