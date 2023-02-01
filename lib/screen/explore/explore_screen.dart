@@ -32,19 +32,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
         CarouselSlider(
           items: [
             Image.asset(
-              'assets/image/banner1.png',
+              'assets/banner/banner1.png',
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
             ),
             Image.asset(
-              'assets/image/banner2.jpeg',
+              'assets/banner/banner2.jpeg',
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
             ),
             Image.asset(
-              'assets/image/banner3.jpeg',
+              'assets/banner/banner3.jpeg',
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
