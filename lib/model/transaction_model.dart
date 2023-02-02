@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:iamsmart/model/transaction_activity_model.dart';
+import 'package:iamsmart/model/user_profile.dart';
 
 class TransactionModel {
   String? id;
   double? amount;
-  String? userId;
+  UserProfile? user;
   String? status;
   String? assignedTo;
   List<TransactionActivityModel>? transactionActivity;
@@ -19,7 +20,7 @@ class TransactionModel {
   TransactionModel({
     this.id,
     this.amount,
-    this.userId,
+    this.user,
     this.status,
     this.assignedTo,
     this.transactionActivity,
@@ -33,7 +34,7 @@ class TransactionModel {
   TransactionModel copyWith({
     String? id,
     double? amount,
-    String? userId,
+    UserProfile? user,
     String? status,
     String? assignedTo,
     List<TransactionActivityModel>? transactionActivity,
@@ -46,7 +47,7 @@ class TransactionModel {
     return TransactionModel(
       id: id ?? this.id,
       amount: amount ?? this.amount,
-      userId: userId ?? this.userId,
+      user: user ?? this.user,
       status: status ?? this.status,
       assignedTo: assignedTo ?? this.assignedTo,
       transactionActivity: transactionActivity ?? this.transactionActivity,
@@ -63,11 +64,11 @@ class TransactionModel {
     return {
       'id': id,
       'amount': amount,
-      'userId': userId,
+      'user': user?.toMap(),
       'status': status,
       'assignedTo': assignedTo,
       'transactionActivity':
-          transactionActivity?.map((x) => x.toMap()).toList(),
+          transactionActivity?.map((x) => x?.toMap())?.toList(),
       'transactionMode': transactionMode,
       'transactionScreenshot': transactionScreenshot,
       'creditParty': creditParty,
@@ -80,7 +81,7 @@ class TransactionModel {
     return TransactionModel(
       id: map['id'],
       amount: map['amount']?.toDouble(),
-      userId: map['userId'],
+      user: map['user'] != null ? UserProfile.fromMap(map['user']) : null,
       status: map['status'],
       assignedTo: map['assignedTo'],
       transactionActivity: map['transactionActivity'] != null
@@ -104,7 +105,7 @@ class TransactionModel {
 
   @override
   String toString() {
-    return 'TransactionModel(id: $id, amount: $amount, userId: $userId, status: $status, assignedTo: $assignedTo, transactionActivity: $transactionActivity, transactionMode: $transactionMode, transactionScreenshot: $transactionScreenshot, creditParty: $creditParty, debitParty: $debitParty, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, amount: $amount, user: $user, status: $status, assignedTo: $assignedTo, transactionActivity: $transactionActivity, transactionMode: $transactionMode, transactionScreenshot: $transactionScreenshot, creditParty: $creditParty, debitParty: $debitParty, createdAt: $createdAt)';
   }
 
   @override
@@ -114,7 +115,7 @@ class TransactionModel {
     return other is TransactionModel &&
         other.id == id &&
         other.amount == amount &&
-        other.userId == userId &&
+        other.user == user &&
         other.status == status &&
         other.assignedTo == assignedTo &&
         listEquals(other.transactionActivity, transactionActivity) &&
@@ -129,7 +130,7 @@ class TransactionModel {
   int get hashCode {
     return id.hashCode ^
         amount.hashCode ^
-        userId.hashCode ^
+        user.hashCode ^
         status.hashCode ^
         assignedTo.hashCode ^
         transactionActivity.hashCode ^

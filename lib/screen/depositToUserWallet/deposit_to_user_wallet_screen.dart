@@ -239,7 +239,7 @@ class _DepositeToUserWalletScreenState
                                 )
                               ],
                               transactionMode: _selectedPaymentMode,
-                              userId: userProfile.id,
+                              user: userProfile,
                               transactionScreenshot: fileDownloadUrl,
                               createdAt: DateTime.now());
 

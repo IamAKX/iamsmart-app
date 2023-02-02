@@ -115,7 +115,7 @@ class _TransferToAIWalletScreenState extends State<TransferToAIWalletScreen> {
                             )
                           ],
                           transactionMode: '',
-                          userId: userProfile.id,
+                          user: userProfile,
                           transactionScreenshot: '',
                           createdAt: DateTime.now());
 

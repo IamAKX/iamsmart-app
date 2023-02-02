@@ -182,7 +182,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 detailItem('Credit', transaction?.creditParty ?? ''),
                 detailItem('Debit', transaction?.debitParty ?? ''),
                 detailItem(
-                    'User Id', transaction?.userId?.substring(0, 10) ?? ''),
+                    'User Id', transaction?.user?.id?.substring(0, 10) ?? ''),
               ],
             ),
           ),
