@@ -77,7 +77,7 @@ class DBService {
     List<TransactionModel> txnList = [];
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
         .collection(txnCollection)
-        .where('userId', isEqualTo: userId)
+        .where('user.id', isEqualTo: userId)
         .orderBy('createdAt', descending: true)
         .get();
 

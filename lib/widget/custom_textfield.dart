@@ -60,6 +60,7 @@ class CustomTextField extends StatelessWidget {
         enabled: enabled ?? true,
         keyboardType: keyboardType,
         autocorrect: true,
+        obscureText: obscure,
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,

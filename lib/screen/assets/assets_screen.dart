@@ -165,6 +165,7 @@ class _AssetsScreenState extends State<AssetsScreen>
               TextButton(
                 onPressed: () {
                   widget.switchTab(1);
+                  loadUserProfile();
                 },
                 child: Text(
                   'See All',
@@ -235,10 +236,13 @@ class _AssetsScreenState extends State<AssetsScreen>
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
                     ),
-                    onTap: () => context.push(
-                      TransactionDetailScreen.transactionDetailScreenRoute
-                          .replaceFirst(':txnId', '${index}'),
-                    ),
+                    onTap: () {
+                      context.push(
+                        TransactionDetailScreen.transactionDetailScreenRoute
+                            .replaceFirst(':txnId', '${index}'),
+                      );
+                      loadUserProfile();
+                    },
                   ),
               separatorBuilder: (context, index) => const Divider(
                     color: dividerColor,
@@ -307,6 +311,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     child: IconButton(
                       onPressed: () {
                         widget.switchTab(1);
+                        loadUserProfile();
                       },
                       icon: const Icon(
                         FontAwesomeIcons.eye,
@@ -339,6 +344,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     onPressed: () {
                       context.push(
                           DepositeToUserWalletScreen.depositeToUserWalletRoute);
+                      loadUserProfile();
                     },
                     tooltip: 'Add to wallet',
                     icon: const Icon(
@@ -353,6 +359,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     onPressed: () {
                       context.push(
                           TransferToAIWalletScreen.transferToAIWalletRoute);
+                      loadUserProfile();
                     },
                     tooltip: 'Invest',
                     icon: const Icon(
@@ -458,6 +465,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     onPressed: () {
                       context.push(
                           TransferToAIWalletScreen.transferToAIWalletRoute);
+                      loadUserProfile();
                     },
                     tooltip: 'Add to wallet',
                     icon: const Icon(
@@ -471,6 +479,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                   IconButton(
                     onPressed: () {
                       context.push(AiSetScreen.aiSetRoute);
+                      loadUserProfile();
                     },
                     tooltip: 'Redeem',
                     icon: const Icon(
