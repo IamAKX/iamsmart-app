@@ -31,6 +31,8 @@ enum PaymentStatus {
 
 enum Party { userExternal, userWallet, aiWallet, admin }
 
+enum SetStatus { running, partial, complete }
+
 String depositToUserWalletPrompt =
     'Deposited amount can take upto 3 working days to get approved';
 String transferToUserWalletPrompt =

@@ -342,9 +342,9 @@ class _AssetsScreenState extends State<AssetsScreen>
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      context.push(
-                          DepositeToUserWalletScreen.depositeToUserWalletRoute);
-                      loadUserProfile();
+                      Future.sync(() => context.push(DepositeToUserWalletScreen
+                              .depositeToUserWalletRoute))
+                          .then((value) => loadUserProfile());
                     },
                     tooltip: 'Add to wallet',
                     icon: const Icon(
@@ -357,9 +357,9 @@ class _AssetsScreenState extends State<AssetsScreen>
                   ),
                   IconButton(
                     onPressed: () {
-                      context.push(
-                          TransferToAIWalletScreen.transferToAIWalletRoute);
-                      loadUserProfile();
+                      Future.sync(() => context.push(
+                              TransferToAIWalletScreen.transferToAIWalletRoute))
+                          .then((value) => loadUserProfile());
                     },
                     tooltip: 'Invest',
                     icon: const Icon(

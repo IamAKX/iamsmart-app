@@ -36,12 +36,15 @@ extension HexColor on Color {
 Color getStatusColor(String status) {
   switch (status) {
     case 'approved':
+    case 'complete':
       return Colors.green;
     case 'pending':
+    case 'partial':
       return Colors.orange;
     case 'rejected':
       return Colors.red;
     case 'transfered':
+    case 'running':
       return Colors.blue;
     case 'invested':
       return Colors.purple;

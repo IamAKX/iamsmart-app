@@ -78,7 +78,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: AiSetDetailScreen.transactionDetailScreenRoute,
+      path: AiSetDetailScreen.aiSetDetailScreenRoute,
       builder: (BuildContext context, GoRouterState state) {
         return AiSetDetailScreen(
           txnId: state.params['txnId'] ?? '',

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/model/set_model.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_details.dart';
+import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/theme.dart';
+import 'package:iamsmart/util/utilities.dart';
 
+import '../../main.dart';
+import '../../model/user_profile.dart';
 import '../../util/colors.dart';
+import '../../util/preference_key.dart';
 import '../../widget/heading.dart';
 
 class AiSetScreen extends StatefulWidget {
@@ -17,6 +23,26 @@ class AiSetScreen extends StatefulWidget {
 }
 
 class _AiSetScreenState extends State<AiSetScreen> {
+  List<SetModel> setList = [];
+  List<SetModel> runningList = [];
+  List<SetModel> completeList = [];
+  UserProfile userProfile =
+      UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+  @override
+  void initState() {
+    super.initState();
+    getAllSet();
+  }
+
+  getAllSet() async {
+    setList = await DBService.instance.getAllSet(userProfile.id!);
+    runningList =
+        setList.where((set) => set.status != SetStatus.complete.name).toList();
+    completeList =
+        setList.where((set) => set.status == SetStatus.complete.name).toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -43,11 +69,11 @@ class _AiSetScreenState extends State<AiSetScreen> {
 
   completed() {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: completeList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () => context.push(
-          AiSetDetailScreen.transactionDetailScreenRoute
-              .replaceAll(':txnId', '$index'),
+          AiSetDetailScreen.aiSetDetailScreenRoute
+              .replaceAll(':txnId', completeList[index].id!),
         ),
         child: Card(
           elevation: 5,
@@ -63,7 +89,7 @@ class _AiSetScreenState extends State<AiSetScreen> {
                 Row(
                   children: [
                     Text(
-                      'Set #${index + 1}',
+                      'Set #${completeList[index].setNumber}',
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: primaryColorDark,
@@ -77,13 +103,18 @@ class _AiSetScreenState extends State<AiSetScreen> {
                   ],
                 ),
                 detailItem('Invested Amount',
-                    '$rupeeSymbol ${currencyFormatter.format(1000 * (index + 1))}'),
+                    '$rupeeSymbol ${currencyFormatter.format(completeList[index].amount)}'),
                 detailItem('Income',
-                    '$rupeeSymbol ${currencyFormatter.format(0.5 * 1000 * (index + 1))}'),
-                detailItem('Total',
-                    '$rupeeSymbol ${currencyFormatter.format((1000 * (index + 1)) + (0.5 * 1000 * (index + 1)))}'),
-                detailItem('Status', 'Completed', valueColor: Colors.green),
-                detailItem('Investment Time', '1$index Jan, 2023 1$index:50'),
+                    '$rupeeSymbol ${currencyFormatter.format(completeList[index].income)}'),
+                // detailItem('Total',
+                //     '$rupeeSymbol ${currencyFormatter.format((1000 * (index + 1)) + (0.5 * 1000 * (index + 1)))}'),
+                detailItem(
+                  'Status',
+                  completeList[index].status!,
+                  valueColor: getStatusColor(completeList[index].status!),
+                ),
+                detailItem('Investment Time',
+                    Utilities.formatDate(completeList[index].createdAt!)),
               ],
             ),
           ),
@@ -94,11 +125,11 @@ class _AiSetScreenState extends State<AiSetScreen> {
 
   running() {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: runningList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () => context.push(
-          AiSetDetailScreen.transactionDetailScreenRoute
-              .replaceAll(':txnId', '$index'),
+          AiSetDetailScreen.aiSetDetailScreenRoute
+              .replaceAll(':txnId', runningList[index].id!),
         ),
         child: Card(
           elevation: 5,
@@ -114,7 +145,7 @@ class _AiSetScreenState extends State<AiSetScreen> {
                 Row(
                   children: [
                     Text(
-                      'Set #${index + 1}',
+                      'Set #${runningList[index].setNumber}',
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: primaryColorDark,
@@ -128,13 +159,15 @@ class _AiSetScreenState extends State<AiSetScreen> {
                   ],
                 ),
                 detailItem('Invested Amount',
-                    '$rupeeSymbol ${currencyFormatter.format(1000 * (index + 1))}'),
+                    '$rupeeSymbol ${currencyFormatter.format(runningList[index].amount)}'),
                 detailItem('Income',
-                    '$rupeeSymbol ${currencyFormatter.format(0.5 * 1000 * (index + 1))}'),
-                detailItem('Total',
-                    '$rupeeSymbol ${currencyFormatter.format((1000 * (index + 1)) + (0.5 * 1000 * (index + 1)))}'),
-                detailItem('Status', 'Running', valueColor: Colors.orange),
-                detailItem('Investment Time', '1$index Jan, 2023 1$index:50'),
+                    '$rupeeSymbol ${currencyFormatter.format(runningList[index].income)}'),
+                // detailItem('Total',
+                //     '$rupeeSymbol ${currencyFormatter.format((1000 * (index + 1)) + (0.5 * 1000 * (index + 1)))}'),
+                detailItem('Status', '${runningList[index].status}',
+                    valueColor: getStatusColor(runningList[index].status!)),
+                detailItem('Investment Time',
+                    Utilities.formatDate(runningList[index].createdAt!)),
               ],
             ),
           ),

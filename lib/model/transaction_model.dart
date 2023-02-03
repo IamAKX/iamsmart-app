@@ -68,7 +68,7 @@ class TransactionModel {
       'status': status,
       'assignedTo': assignedTo,
       'transactionActivity':
-          transactionActivity?.map((x) => x?.toMap())?.toList(),
+          transactionActivity?.map((x) => x.toMap()).toList(),
       'transactionMode': transactionMode,
       'transactionScreenshot': transactionScreenshot,
       'creditParty': creditParty,

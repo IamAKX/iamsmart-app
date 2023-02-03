@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/model/set_model.dart';
 import 'package:iamsmart/model/transaction_model.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +13,7 @@ class DBService {
   late FirebaseFirestore _db;
   String userCollection = 'users';
   String txnCollection = 'transactions';
+  String setCollection = 'sets';
 
   DBService() {
     _db = FirebaseFirestore.instance;
@@ -93,5 +95,26 @@ class DBService {
       txn = TransactionModel.fromMap(snapshot.data() ?? {});
     });
     return txn;
+  }
+
+  Future<List<SetModel>> getAllSet(String userId) async {
+    List<SetModel> setList = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(setCollection)
+        .where('userProfile.id', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    setList =
+        querySnapshot.docs.map((set) => SetModel.fromMap(set.data())).toList();
+    return setList;
+  }
+
+  Future<SetModel> getSetById(String setId) async {
+    SetModel set = SetModel();
+    await _db.collection(setCollection).doc(setId).get().then((s) {
+      set = SetModel.fromMap(s.data() ?? {});
+    });
+    return set;
   }
 }
