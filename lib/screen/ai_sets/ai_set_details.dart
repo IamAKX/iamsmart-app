@@ -5,9 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/model/set_model.dart';
 import 'package:iamsmart/service/db_service.dart';
+import 'package:iamsmart/service/snakbar_service.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/util/utilities.dart';
 import 'package:iamsmart/widget/custom_textfield.dart';
+import 'package:string_validator/string_validator.dart';
 
 import '../../util/colors.dart';
 import '../../util/constants.dart';
@@ -98,11 +100,29 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
                       title: 'Do you want to submit?',
                       autoDismiss: false,
                       desc:
-                          'You are about to transfer $rupeeSymbol ${currencyFormatter.format((1000 * (int.parse(widget.txnId) + 1)) + (0.5 * 1000 * (int.parse(widget.txnId) + 1)))} to user wallet, which can not be reversed.',
+                          'You are about to transfer $rupeeSymbol ${_amountCtrl.text} to user wallet, which can not be reversed.',
                       btnCancelOnPress: () {
                         context.pop();
                       },
-                      btnOkOnPress: () {
+                      btnOkOnPress: () async {
+                        if (_amountCtrl.text.isEmpty ||
+                            !isFloat(_amountCtrl.text)) {
+                          SnackBarService.instance
+                              .showSnackBarError('Amount is invalid');
+                          context.pop();
+                          return;
+                        }
+
+                        if (double.parse(_amountCtrl.text) > set!.amount!) {
+                          SnackBarService.instance.showSnackBarError(
+                              '$rupeeSymbol ${_amountCtrl.text} is more the available amount in set');
+                          context.pop();
+                          return;
+                        }
+
+                        await DBService.instance
+                            .withdrawSet(set!, double.parse(_amountCtrl.text));
+                        _amountCtrl.text = '';
                         context.pop();
                       },
                       onDismissCallback: (type) {},

@@ -16,7 +16,13 @@ import '../../util/preference_key.dart';
 import '../../widget/heading.dart';
 
 class TransactionScreen extends StatefulWidget {
-  const TransactionScreen({super.key});
+  TransactionScreen({
+    Key? key,
+    required this.txnIndex,
+    required this.switchTab,
+  }) : super(key: key);
+  final int txnIndex;
+  final Function(int index, int txnIndex) switchTab;
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -51,7 +57,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         .toList();
     redeemList = txnList
         .where((txn) =>
-            txn.debitParty! == Party.admin.name &&
+            txn.debitParty! == Party.aiWallet.name &&
             txn.creditParty! == Party.userWallet.name)
         .toList();
 
@@ -61,27 +67,34 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Heading(title: 'Record'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Deposit'),
-              Tab(text: 'Transfer'),
-              Tab(text: 'Redeem'),
-              Tab(text: 'All'),
+    return WillPopScope(
+      onWillPop: () async {
+        widget.switchTab(0, 0);
+        return false;
+      },
+      child: DefaultTabController(
+        initialIndex: widget.txnIndex,
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Heading(title: 'Record'),
+            bottom: const TabBar(
+              tabs: [
+                Tab(text: 'Deposit'),
+                Tab(text: 'Transfer'),
+                Tab(text: 'Redeem'),
+                Tab(text: 'All'),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              deposit(),
+              transfer(),
+              redeem(),
+              all(),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            deposit(),
-            transfer(),
-            redeem(),
-            all(),
-          ],
         ),
       ),
     );

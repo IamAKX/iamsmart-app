@@ -14,8 +14,11 @@ import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/widget/heading.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
+import '../../model/transaction_model.dart';
 import '../../service/snakbar_service.dart';
+import '../../util/utilities.dart';
 import '../transaction/transaction_detail_screen.dart';
 
 class AssetsScreen extends StatefulWidget {
@@ -23,7 +26,7 @@ class AssetsScreen extends StatefulWidget {
     Key? key,
     required this.switchTab,
   }) : super(key: key);
-  final Function(int index) switchTab;
+  final Function(int index, int txnIndex) switchTab;
 
   @override
   State<AssetsScreen> createState() => _AssetsScreenState();
@@ -34,18 +37,29 @@ class _AssetsScreenState extends State<AssetsScreen>
   late AnimationController _controller;
   UserProfile userProfile =
       UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+  List<TransactionModel> txnList = [];
 
   loadUserProfile() async {
     userProfile = await DBService.instance.getUserById(userProfile.id!);
     prefs.setString(PreferenceKey.user, userProfile.toJson());
-    setState(() {});
+
+    await DBService.instance
+        .getCurrentDateTransactions(userProfile.id!)
+        .then((value) {
+      setState(() {
+        txnList = value;
+      });
+    });
+    // setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    loadUserProfile();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => loadUserProfile(),
+    );
   }
 
   @override
@@ -60,7 +74,7 @@ class _AssetsScreenState extends State<AssetsScreen>
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
-          onTap: () => widget.switchTab(3),
+          onTap: () => widget.switchTab(3, 0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -156,7 +170,7 @@ class _AssetsScreenState extends State<AssetsScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'TRANSACTIONS',
+                'Today\'s Transactions',
                 style: Theme.of(context).textTheme.subtitle1?.copyWith(
                       fontWeight: FontWeight.w900,
                       color: textColorLight,
@@ -164,8 +178,7 @@ class _AssetsScreenState extends State<AssetsScreen>
               ),
               TextButton(
                 onPressed: () {
-                  widget.switchTab(1);
-                  loadUserProfile();
+                  widget.switchTab(1, 3);
                 },
                 child: Text(
                   'See All',
@@ -179,76 +192,75 @@ class _AssetsScreenState extends State<AssetsScreen>
           ),
         ),
         Expanded(
-          child: ListView.separated(
-              itemBuilder: (context, index) => ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: primaryColor.withOpacity(0.15),
-                      child: Icon(
-                        index % 2 == 0
-                            ? FontAwesomeIcons.arrowRightFromBracket
-                            : index % 3 == 0
-                                ? FontAwesomeIcons.arrowRightToBracket
-                                : FontAwesomeIcons.arrowsLeftRight,
-                        size: 18,
-                        color: bottomNavbarActiveColor,
-                      ),
-                    ),
-                    title: Text(
-                      index % 2 == 0
-                          ? 'Deposit to User wallet'
-                          : index % 3 == 0
-                              ? 'Transfered to User Wallet'
-                              : 'Transfered to AI wallet',
-                    ),
-                    subtitle: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          index % 2 == 0
-                              ? 'Rejected'
-                              : index % 3 == 0
-                                  ? 'Approved'
-                                  : 'Pending',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: index % 2 == 0
-                                        ? Colors.red.withOpacity(0.7)
-                                        : index % 3 == 0
-                                            ? Colors.green.withOpacity(0.7)
-                                            : Colors.orange.withOpacity(0.7),
-                                  ),
+          child: txnList.isEmpty
+              ? Center(
+                  child: Text(
+                    'No Transaction',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                )
+              : ListView.separated(
+                  itemBuilder: (context, index) => ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: primaryColor.withOpacity(0.15),
+                          child: Icon(
+                            Utilities.getIconForTransaction(
+                                txnList.elementAt(index)),
+                            size: 18,
+                            color: bottomNavbarActiveColor,
+                          ),
                         ),
-                        Text(
-                          '${index + 1} days ago',
-                          style: Theme.of(context).textTheme.caption,
-                        )
-                      ],
-                    ),
-                    isThreeLine: true,
-                    trailing: Hero(
-                      tag: '$index',
-                      child: Text(
-                        '$rupeeSymbol ${currencyFormatter.format(10000 * (index + 1))}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                        title: Text(
+                          txnList
+                                  .elementAt(index)
+                                  .transactionActivity
+                                  ?.first
+                                  .comment ??
+                              'Transaction',
+                        ),
+                        subtitle: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              txnList.elementAt(index).status ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: getStatusColor(
+                                        txnList.elementAt(index).status ?? ''),
+                                  ),
+                            ),
+                            Text(
+                              timeago
+                                  .format(txnList.elementAt(index).createdAt!),
+                              style: Theme.of(context).textTheme.caption,
+                            )
+                          ],
+                        ),
+                        isThreeLine: true,
+                        trailing: Hero(
+                          tag: txnList.elementAt(index).id!,
+                          child: Text(
+                            '$rupeeSymbol ${currencyFormatter.format(txnList.elementAt(index).amount)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        onTap: () => context.push(
+                          TransactionDetailScreen.transactionDetailScreenRoute
+                              .replaceFirst(
+                                  ':txnId', txnList.elementAt(index).id!),
+                        ),
                       ),
-                    ),
-                    onTap: () {
-                      context.push(
-                        TransactionDetailScreen.transactionDetailScreenRoute
-                            .replaceFirst(':txnId', '${index}'),
-                      );
-                      loadUserProfile();
-                    },
-                  ),
-              separatorBuilder: (context, index) => const Divider(
-                    color: dividerColor,
-                    height: 1,
-                  ),
-              itemCount: 5),
+                  separatorBuilder: (context, index) => const Divider(
+                        color: dividerColor,
+                        height: 1,
+                      ),
+                  itemCount: txnList.length),
         ),
       ],
     );
@@ -310,7 +322,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     right: 1,
                     child: IconButton(
                       onPressed: () {
-                        widget.switchTab(1);
+                        widget.switchTab(1, 0);
                         loadUserProfile();
                       },
                       icon: const Icon(
@@ -432,7 +444,7 @@ class _AssetsScreenState extends State<AssetsScreen>
                     right: 1,
                     child: IconButton(
                       onPressed: () {
-                        widget.switchTab(1);
+                        widget.switchTab(1, 1);
                       },
                       icon: const Icon(
                         FontAwesomeIcons.eye,

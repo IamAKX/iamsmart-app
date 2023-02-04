@@ -7,7 +7,11 @@ import 'package:iamsmart/widget/coming_soon.dart';
 import '../../widget/heading.dart';
 
 class RewardScreen extends StatefulWidget {
-  const RewardScreen({super.key});
+  const RewardScreen({
+    Key? key,
+    required this.switchTab,
+  }) : super(key: key);
+  final Function(int index, int txnIndex) switchTab;
 
   @override
   State<RewardScreen> createState() => _RewardScreenState();
@@ -16,11 +20,17 @@ class RewardScreen extends StatefulWidget {
 class _RewardScreenState extends State<RewardScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Heading(title: 'Reward'),
+    return WillPopScope(
+      onWillPop: () async {
+        widget.switchTab(0, 0);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Heading(title: 'Reward'),
+        ),
+        body: const ComingSoon(),
       ),
-      body: const ComingSoon(),
     );
   }
 

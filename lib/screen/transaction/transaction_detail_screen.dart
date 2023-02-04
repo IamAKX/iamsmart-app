@@ -179,6 +179,17 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       );
                     },
                   ),
+                InkWell(
+                  child: detailItem(
+                    'Transaction Activity',
+                    'View',
+                    valueColor: Colors.blue,
+                  ),
+                  onTap: () {
+                    Utilities.showActivityLogPopup(
+                        transaction?.transactionActivity, context);
+                  },
+                ),
                 detailItem('Credit', transaction?.creditParty ?? ''),
                 detailItem('Debit', transaction?.debitParty ?? ''),
                 detailItem(

@@ -3,10 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/set_model.dart';
 import 'package:iamsmart/model/transaction_model.dart';
 import 'package:iamsmart/model/user_profile.dart';
+import 'package:iamsmart/util/preference_key.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../model/transaction_activity_model.dart';
+import '../util/constants.dart';
 
 class DBService {
   static DBService instance = DBService();
@@ -116,5 +121,51 @@ class DBService {
       set = SetModel.fromMap(s.data() ?? {});
     });
     return set;
+  }
+
+  Future<bool> withdrawSet(SetModel set, double amount) async {
+    UserProfile userProfile =
+        UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    userProfile = await getUserById(userProfile.id!);
+    TransactionModel txn = TransactionModel(
+      amount: amount,
+      assignedTo: Party.admin.name,
+      creditParty: Party.userWallet.name,
+      debitParty: Party.aiWallet.name,
+      status: PaymentStatus.pending.name,
+      transactionActivity: [
+        TransactionActivityModel(
+          comment: 'Redeem from ${set.userProfile!.name!} #${set.setNumber}',
+          createdAt: DateTime.now(),
+        )
+      ],
+      transactionMode: set.id,
+      user: userProfile,
+      transactionScreenshot: '',
+      createdAt: DateTime.now(),
+    );
+
+    await addTransaction(txn);
+
+    return false;
+  }
+
+  Future<List<TransactionModel>> getCurrentDateTransactions(
+      String userId) async {
+    List<TransactionModel> txnList = [];
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(txnCollection)
+        .where('user.id', isEqualTo: userId)
+        .where('createdAt',
+            isGreaterThanOrEqualTo: today.millisecondsSinceEpoch)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    txnList = querySnapshot.docs
+        .map((txn) => TransactionModel.fromMap(txn.data()))
+        .toList();
+    return txnList;
   }
 }

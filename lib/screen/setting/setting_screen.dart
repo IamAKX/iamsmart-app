@@ -24,7 +24,11 @@ import '../../util/theme.dart';
 import '../../widget/heading.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+  const SettingScreen({
+    Key? key,
+    required this.switchTab,
+  }) : super(key: key);
+  final Function(int index, int txnIndex) switchTab;
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -44,11 +48,17 @@ class _SettingScreenState extends State<SettingScreen> {
     if (prefs.containsKey(PreferenceKey.user)) {
       userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Heading(title: 'Profile'),
+    return WillPopScope(
+      onWillPop: () async {
+        widget.switchTab(0, 0);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Heading(title: 'Profile'),
+        ),
+        body: getBody(),
       ),
-      body: getBody(),
     );
   }
 

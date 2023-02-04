@@ -19,6 +19,7 @@ class MainContainer extends StatefulWidget {
 
 class _MainContainerState extends State<MainContainer> {
   int _selectedTab = 0;
+  int _transactionTab = 0;
 
   List<FlashyTabBarItem> items = [
     FlashyTabBarItem(
@@ -47,22 +48,36 @@ class _MainContainerState extends State<MainContainer> {
     switch (_selectedTab) {
       case 0:
         return AssetsScreen(
-          switchTab: (index) {
-            switchTab(index);
+          switchTab: (index, txnIndex) {
+            switchTab(index, txnIndex);
           },
         );
       case 1:
-        return const TransactionScreen();
+        return TransactionScreen(
+          txnIndex: _transactionTab,
+          switchTab: (index, txnIndex) {
+            switchTab(index, txnIndex);
+          },
+        );
       case 2:
-        return const RewardScreen();
+        return RewardScreen(
+          switchTab: (index, txnIndex) {
+            switchTab(index, txnIndex);
+          },
+        );
       case 3:
-        return const SettingScreen();
+        return SettingScreen(
+          switchTab: (index, txnIndex) {
+            switchTab(index, txnIndex);
+          },
+        );
     }
   }
 
-  switchTab(int index) {
+  switchTab(int index, int txnIndex) {
     setState(() {
       _selectedTab = index;
+      _transactionTab = txnIndex;
     });
   }
 
@@ -95,7 +110,7 @@ class _MainContainerState extends State<MainContainer> {
             child: FlashyTabBar(
               selectedIndex: _selectedTab,
               showElevation: true,
-              onItemSelected: (value) => switchTab(value),
+              onItemSelected: (value) => switchTab(value, 0),
               items: items,
             ),
           ),
