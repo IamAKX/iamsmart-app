@@ -33,11 +33,14 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
   @override
   void initState() {
     super.initState();
-    loadSet();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => loadSet(),
+    );
   }
 
   loadSet() async {
     set = await DBService.instance.getSetById(widget.txnId);
+    _amountCtrl.text = set?.amount.toString() ?? '0';
     setState(() {});
   }
 
@@ -74,23 +77,23 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
         const SizedBox(
           height: defaultPadding * 2,
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            'Withdraw complete/partial amount',
-            style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                  color: textColorDark,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-        CustomTextField(
-          hint: 'Amount',
-          controller: _amountCtrl,
-          keyboardType: TextInputType.number,
-          obscure: false,
-          icon: FontAwesomeIcons.coins,
-        ),
+        // Align(
+        //   alignment: Alignment.center,
+        //   child: Text(
+        //     'Withdraw complete/partial amount',
+        //     style: Theme.of(context).textTheme.subtitle1?.copyWith(
+        //           color: textColorDark,
+        //           fontWeight: FontWeight.bold,
+        //         ),
+        //   ),
+        // ),
+        // CustomTextField(
+        //   hint: 'Amount',
+        //   controller: _amountCtrl,
+        //   keyboardType: TextInputType.number,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.coins,
+        // ),
         ActiveButton(
             onPressed: () {
               AwesomeDialog(
@@ -130,7 +133,7 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
                       btnCancelText: 'Cancel')
                   .show();
             },
-            label: 'Proceed'),
+            label: 'Complete set'),
       ],
     );
   }
