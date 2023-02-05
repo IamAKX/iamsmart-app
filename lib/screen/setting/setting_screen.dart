@@ -71,18 +71,18 @@ class _SettingScreenState extends State<SettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(80.0),
+                borderRadius: BorderRadius.circular(settingsPageUserIconSize),
                 child: CachedNetworkImage(
                   imageUrl: userProfile.profileImage ?? '',
-                  width: 80,
-                  height: 80,
+                  width: settingsPageUserIconSize,
+                  height: settingsPageUserIconSize,
                   fit: BoxFit.cover,
                   placeholder: (context, url) =>
                       const Center(child: CircularProgressIndicator()),
                   errorWidget: (context, url, error) => Image.asset(
                     'assets/image/user.png',
-                    width: 80,
-                    height: 80,
+                    width: settingsPageUserIconSize,
+                    height: settingsPageUserIconSize,
                   ),
                 ),
               ),
@@ -139,6 +139,29 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                     ),
                   ),
+                  const SizedBox(
+                    height: defaultPadding / 3,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: defaultPadding / 2,
+                        vertical: defaultPadding / 4),
+                    decoration: BoxDecoration(
+                        color: userProfile.isKycDone ?? false
+                            ? Colors.green.withOpacity(0.2)
+                            : Colors.red.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Text(
+                      userProfile.isKycDone ?? false
+                          ? 'KYC Verified'
+                          : 'KYC not verified',
+                      style: Theme.of(context).textTheme.caption?.copyWith(
+                            color: userProfile.isKycDone ?? false
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                    ),
+                  )
                 ],
               ),
             ],

@@ -130,6 +130,17 @@ class _AssetsScreenState extends State<AssetsScreen>
               color: bottomNavbarActiveColor,
               size: 20,
             ),
+          ),
+          IconButton(
+            onPressed: () async {
+              loadUserProfile();
+              SnackBarService.instance.showSnackBarInfo('Refreshing...');
+            },
+            icon: const Icon(
+              FontAwesomeIcons.arrowsRotate,
+              color: bottomNavbarActiveColor,
+              size: 20,
+            ),
           )
         ],
       ),
@@ -353,10 +364,11 @@ class _AssetsScreenState extends State<AssetsScreen>
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      Future.sync(() => context.push(DepositeToUserWalletScreen
-                              .depositeToUserWalletRoute))
-                          .then((value) => loadUserProfile());
+                    onPressed: () async {
+                      if (await Utilities.checkForKycPrompt(context)) {
+                        context.push(DepositeToUserWalletScreen
+                            .depositeToUserWalletRoute);
+                      }
                     },
                     tooltip: 'Add to wallet',
                     icon: const Icon(
@@ -368,10 +380,12 @@ class _AssetsScreenState extends State<AssetsScreen>
                     width: defaultPadding / 2,
                   ),
                   IconButton(
-                    onPressed: () {
-                      Future.sync(() => context.push(
-                              TransferToAIWalletScreen.transferToAIWalletRoute))
-                          .then((value) => loadUserProfile());
+                    onPressed: () async {
+                      if (await Utilities.checkForKycPrompt(context)) {
+                        Future.sync(() => context.push(TransferToAIWalletScreen
+                                .transferToAIWalletRoute))
+                            .then((value) => loadUserProfile());
+                      }
                     },
                     tooltip: 'Invest',
                     icon: const Icon(
@@ -474,10 +488,11 @@ class _AssetsScreenState extends State<AssetsScreen>
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      context.push(
-                          TransferToAIWalletScreen.transferToAIWalletRoute);
-                      loadUserProfile();
+                    onPressed: () async {
+                      if (await Utilities.checkForKycPrompt(context)) {
+                        context.push(
+                            TransferToAIWalletScreen.transferToAIWalletRoute);
+                      }
                     },
                     tooltip: 'Add to wallet',
                     icon: const Icon(
@@ -489,9 +504,10 @@ class _AssetsScreenState extends State<AssetsScreen>
                     width: defaultPadding / 2,
                   ),
                   IconButton(
-                    onPressed: () {
-                      context.push(AiSetScreen.aiSetRoute);
-                      loadUserProfile();
+                    onPressed: () async {
+                      if (await Utilities.checkForKycPrompt(context)) {
+                        context.push(AiSetScreen.aiSetRoute);
+                      }
                     },
                     tooltip: 'Redeem',
                     icon: const Icon(

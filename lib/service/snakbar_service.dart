@@ -41,7 +41,7 @@ class SnackBarService {
   void showSnackBarInfo(String message) {
     ScaffoldMessenger.of(_buildContext).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 4),
+        duration: const Duration(seconds: 2),
         content: Text(
           message,
           style: const TextStyle(

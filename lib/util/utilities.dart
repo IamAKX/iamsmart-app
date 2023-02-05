@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,11 @@ import 'package:iamsmart/model/transaction_model.dart';
 import 'package:iamsmart/util/constants.dart';
 import 'package:intl/intl.dart';
 
+import '../main.dart';
 import '../model/transaction_activity_model.dart';
+import '../model/user_profile.dart';
+import '../service/db_service.dart';
+import 'preference_key.dart';
 
 class Utilities {
   static IconData getIconForTransaction(TransactionModel txn) {
@@ -81,5 +86,30 @@ class Utilities {
         );
       },
     );
+  }
+
+  static Future<bool> checkForKycPrompt(BuildContext context) async {
+    UserProfile profile =
+        UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    profile = await DBService.instance.getUserById(profile.id!);
+    prefs.setString(PreferenceKey.user, profile.toJson());
+    if (profile.isKycDone ?? false) {
+      return true;
+    } else {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.info,
+        animType: AnimType.bottomSlide,
+        title: 'Action restricted',
+        autoDismiss: false,
+        desc: 'Please complete your KYC to continue with the transaction',
+        btnOkOnPress: () {
+          context.pop();
+        },
+        onDismissCallback: (type) {},
+        btnOkText: 'Okay',
+      ).show();
+      return false;
+    }
   }
 }

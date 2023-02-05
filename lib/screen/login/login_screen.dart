@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/screen/forgotPassword/forgot_password_screen.dart';
 import 'package:iamsmart/screen/mainContainer/main_container.dart';
 import 'package:iamsmart/screen/register/register_screen.dart';
@@ -137,7 +138,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           _emailCtrl.text, _passwordCtrl.text)
                       .then((value) {
                     if (_auth.status == AuthStatus.authenticated) {
-                      context.go(MainContainer.mainContainerRoute);
+                      UserProfile profile = UserProfile.fromJson(
+                          prefs.getString(PreferenceKey.user)!);
+                      if (profile.isProfileSuspended ?? true) {
+                        SnackBarService.instance
+                            .showSnackBarError('Account suspended');
+                      } else {
+                        context.go(MainContainer.mainContainerRoute);
+                      }
                     }
                   });
                 },
@@ -156,7 +164,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: InkWell(
                     onTap: () async {
                       if (await LocalAuthService.authenticate()) {
-                        context.go(MainContainer.mainContainerRoute);
+                        UserProfile profile = UserProfile.fromJson(
+                            prefs.getString(PreferenceKey.user)!);
+                        if (profile.isProfileSuspended ?? true) {
+                          SnackBarService.instance
+                              .showSnackBarError('Account suspended');
+                        } else {
+                          context.go(MainContainer.mainContainerRoute);
+                        }
                       }
                     },
                     child: Container(
