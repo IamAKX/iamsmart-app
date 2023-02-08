@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -366,8 +368,16 @@ class _AssetsScreenState extends State<AssetsScreen>
                   IconButton(
                     onPressed: () async {
                       if (await Utilities.checkForKycPrompt(context)) {
-                        context.push(DepositeToUserWalletScreen
-                            .depositeToUserWalletRoute);
+                        // context.push(DepositeToUserWalletScreen
+                        //     .depositeToUserWalletRoute);
+                        // ignore: use_build_context_synchronously
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const DepositeToUserWalletScreen(),
+                          ),
+                        ).then((value) => loadUserProfile());
                       }
                     },
                     tooltip: 'Add to wallet',
@@ -382,9 +392,15 @@ class _AssetsScreenState extends State<AssetsScreen>
                   IconButton(
                     onPressed: () async {
                       if (await Utilities.checkForKycPrompt(context)) {
-                        Future.sync(() => context.push(TransferToAIWalletScreen
-                                .transferToAIWalletRoute))
-                            .then((value) => loadUserProfile());
+                        // Future.sync(() => context.push(TransferToAIWalletScreen
+                        //         .transferToAIWalletRoute))
+                        //     .then((value) => loadUserProfile());
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const TransferToAIWalletScreen()),
+                        ).then((value) => loadUserProfile());
                       }
                     },
                     tooltip: 'Invest',
@@ -490,8 +506,14 @@ class _AssetsScreenState extends State<AssetsScreen>
                   IconButton(
                     onPressed: () async {
                       if (await Utilities.checkForKycPrompt(context)) {
-                        context.push(
-                            TransferToAIWalletScreen.transferToAIWalletRoute);
+                        // context.push(
+                        //     TransferToAIWalletScreen.transferToAIWalletRoute);
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const TransferToAIWalletScreen()),
+                        ).then((value) => loadUserProfile());
                       }
                     },
                     tooltip: 'Add to wallet',
@@ -506,7 +528,12 @@ class _AssetsScreenState extends State<AssetsScreen>
                   IconButton(
                     onPressed: () async {
                       if (await Utilities.checkForKycPrompt(context)) {
-                        context.push(AiSetScreen.aiSetRoute);
+                        // context.push(AiSetScreen.aiSetRoute);
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AiSetScreen()),
+                        ).then((value) => loadUserProfile());
                       }
                     },
                     tooltip: 'Redeem',

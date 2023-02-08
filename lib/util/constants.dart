@@ -3,11 +3,13 @@ import 'package:intl/intl.dart';
 const String rupeeSymbol = '₹';
 var currencyFormatter = NumberFormat("#,##,##0.00", "en_US");
 List<String> depositePaymentModeList = [
-  'Debit card',
-  'Credit card',
+  // 'Debit card',
+  // 'Credit card',
   'IMPS',
   'NEFT',
-  'Other'
+  'PayPal',
+  'UPI ID'
+  // 'Other'
 ];
 
 List<String> withdrawlPaymentModeList = ['IMPS', 'NEFT', 'Other'];
@@ -31,9 +33,9 @@ enum PaymentStatus {
 
 enum Party { userExternal, userWallet, aiWallet, admin }
 
-enum SetStatus { running, partial, complete }
+enum SetStatus { running, partial, closed, pending }
 
 String depositToUserWalletPrompt =
-    'Deposited amount can take upto 3 working days to get approved';
+    'Deposited amount can take upto 6 working hours to get approved';
 String transferToUserWalletPrompt =
-    'Transfered ammount can take upto 5 working hours to get approved';
+    'Transfered amount can take upto 6 working hours to get approved';

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:iamsmart/model/transaction_activity_model.dart';
-import 'package:iamsmart/model/user_profile.dart';
+import 'transaction_activity_model.dart';
+import 'user_profile.dart';
 
 class TransactionModel {
   String? id;
@@ -17,6 +17,7 @@ class TransactionModel {
   String? creditParty;
   String? debitParty;
   DateTime? createdAt;
+  String? rejectionComment;
   TransactionModel({
     this.id,
     this.amount,
@@ -29,6 +30,7 @@ class TransactionModel {
     this.creditParty,
     this.debitParty,
     this.createdAt,
+    this.rejectionComment,
   });
 
   TransactionModel copyWith({
@@ -43,6 +45,7 @@ class TransactionModel {
     String? creditParty,
     String? debitParty,
     DateTime? createdAt,
+    String? rejectionComment,
   }) {
     return TransactionModel(
       id: id ?? this.id,
@@ -57,6 +60,7 @@ class TransactionModel {
       creditParty: creditParty ?? this.creditParty,
       debitParty: debitParty ?? this.debitParty,
       createdAt: createdAt ?? this.createdAt,
+      rejectionComment: rejectionComment ?? this.rejectionComment,
     );
   }
 
@@ -74,6 +78,7 @@ class TransactionModel {
       'creditParty': creditParty,
       'debitParty': debitParty,
       'createdAt': createdAt?.millisecondsSinceEpoch,
+      'rejectionComment': rejectionComment,
     };
   }
 
@@ -95,6 +100,7 @@ class TransactionModel {
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
+      rejectionComment: map['rejectionComment'],
     );
   }
 
@@ -105,7 +111,7 @@ class TransactionModel {
 
   @override
   String toString() {
-    return 'TransactionModel(id: $id, amount: $amount, user: $user, status: $status, assignedTo: $assignedTo, transactionActivity: $transactionActivity, transactionMode: $transactionMode, transactionScreenshot: $transactionScreenshot, creditParty: $creditParty, debitParty: $debitParty, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, amount: $amount, user: $user, status: $status, assignedTo: $assignedTo, transactionActivity: $transactionActivity, transactionMode: $transactionMode, transactionScreenshot: $transactionScreenshot, creditParty: $creditParty, debitParty: $debitParty, createdAt: $createdAt, rejectionComment: $rejectionComment)';
   }
 
   @override
@@ -123,7 +129,8 @@ class TransactionModel {
         other.transactionScreenshot == transactionScreenshot &&
         other.creditParty == creditParty &&
         other.debitParty == debitParty &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.rejectionComment == rejectionComment;
   }
 
   @override
@@ -138,6 +145,7 @@ class TransactionModel {
         transactionScreenshot.hashCode ^
         creditParty.hashCode ^
         debitParty.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        rejectionComment.hashCode;
   }
 }

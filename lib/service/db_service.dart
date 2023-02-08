@@ -147,6 +147,11 @@ class DBService {
 
     await addTransaction(txn);
 
+    await _db
+        .collection(setCollection)
+        .doc(set.id)
+        .update({'status': SetStatus.pending.name});
+
     return false;
   }
 

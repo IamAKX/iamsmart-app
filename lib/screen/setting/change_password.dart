@@ -22,6 +22,7 @@ class ChangePasswordScreen extends StatefulWidget {
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _passwordCtrl = TextEditingController();
+  final TextEditingController _cnfpasswordCtrl = TextEditingController();
   late AuthProvider _auth;
 
   @override
@@ -50,11 +51,25 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           obscure: true,
           icon: FontAwesomeIcons.lock,
         ),
+        CustomTextField(
+          hint: 'Confirm New Password',
+          controller: _cnfpasswordCtrl,
+          keyboardType: TextInputType.visiblePassword,
+          obscure: true,
+          icon: FontAwesomeIcons.lock,
+        ),
         const SizedBox(
           height: defaultPadding,
         ),
         ActiveButton(
           onPressed: () async {
+            if (_passwordCtrl.text.isEmpty ||
+                _cnfpasswordCtrl.text.isEmpty ||
+                _passwordCtrl.text != _cnfpasswordCtrl.text) {
+              SnackBarService.instance.showSnackBarError(
+                  'New password and confirm new password should be same and not empty');
+              return;
+            }
             _auth.updatePassword(_passwordCtrl.text).then((value) {
               if (value) {
                 AwesomeDialog(

@@ -89,10 +89,13 @@ class _DepositeToUserWalletScreenState
                   label: 'Payment Mode',
                   items: depositePaymentModeList,
                   onChanged: (value) {
-                    _selectedPaymentMode = value!;
+                    setState(() {
+                      _selectedPaymentMode = value!;
+                    });
                   },
                 ),
               ),
+              getPayeeAccountDetail(),
               const Padding(
                 padding: EdgeInsets.only(
                   left: defaultPadding,
@@ -287,5 +290,109 @@ class _DepositeToUserWalletScreenState
     _selectedPaymentMode = '';
     isAgreementChecked = false;
     imageFile = null;
+  }
+
+  getPayeeAccountDetail() {
+    switch (_selectedPaymentMode) {
+      case 'IMPS':
+      case 'NEFT':
+        return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: dividerColor),
+              borderRadius: BorderRadius.circular(4)),
+          padding: const EdgeInsets.all(defaultPadding / 2),
+          margin: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              detailItem(
+                'Account Holder',
+                'Visu Technologies Private Limited',
+              ),
+              detailItem(
+                'Account Number',
+                '50200059883509',
+              ),
+              detailItem(
+                'Account Type',
+                'Current Account',
+              ),
+              detailItem(
+                'IFSC Code',
+                'HDFC0000632',
+              ),
+              detailItem(
+                'Branch',
+                'Alwal',
+              ),
+            ],
+          ),
+        );
+
+      case 'PayPal':
+        return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: dividerColor),
+              borderRadius: BorderRadius.circular(4)),
+          padding: const EdgeInsets.all(defaultPadding / 2),
+          margin: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              detailItem(
+                'PayPal Id',
+                'visu.3006@gmail.com',
+              ),
+            ],
+          ),
+        );
+      case 'UPI ID':
+        return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: dividerColor),
+              borderRadius: BorderRadius.circular(4)),
+          padding: const EdgeInsets.all(defaultPadding / 2),
+          margin: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              detailItem(
+                'UPI Id',
+                'visutechnologies@ybl',
+              ),
+            ],
+          ),
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Row detailItem(String key, String value,
+      {Color? keyColor, Color? valueColor}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            key,
+            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                  color: keyColor ?? textColorDark,
+                ),
+          ),
+        ),
+        Flexible(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                  color: valueColor ?? textColorLight,
+                  fontWeight: FontWeight.bold,
+                ),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      ],
+    );
   }
 }

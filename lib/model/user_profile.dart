@@ -29,6 +29,15 @@ class UserProfile {
   double? rewardBalance;
   List<String>? referalList;
   String? inviteCode;
+  String? phone;
+  String? residencialAddress1;
+  String? residencialAddress2;
+  String? residencialAddress3;
+  String? residencialAddress4;
+  String? communicationAddress1;
+  String? communicationAddress2;
+  String? communicationAddress3;
+  String? communicationAddress4;
   UserProfile({
     this.id,
     this.name,
@@ -55,6 +64,15 @@ class UserProfile {
     this.rewardBalance,
     this.referalList,
     this.inviteCode,
+    this.phone,
+    this.residencialAddress1,
+    this.residencialAddress2,
+    this.residencialAddress3,
+    this.residencialAddress4,
+    this.communicationAddress1,
+    this.communicationAddress2,
+    this.communicationAddress3,
+    this.communicationAddress4,
   });
 
   UserProfile copyWith({
@@ -83,6 +101,15 @@ class UserProfile {
     double? rewardBalance,
     List<String>? referalList,
     String? inviteCode,
+    String? phone,
+    String? residencialAddress1,
+    String? residencialAddress2,
+    String? residencialAddress3,
+    String? residencialAddress4,
+    String? communicationAddress1,
+    String? communicationAddress2,
+    String? communicationAddress3,
+    String? communicationAddress4,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -111,6 +138,19 @@ class UserProfile {
       rewardBalance: rewardBalance ?? this.rewardBalance,
       referalList: referalList ?? this.referalList,
       inviteCode: inviteCode ?? this.inviteCode,
+      phone: phone ?? this.phone,
+      residencialAddress1: residencialAddress1 ?? this.residencialAddress1,
+      residencialAddress2: residencialAddress2 ?? this.residencialAddress2,
+      residencialAddress3: residencialAddress3 ?? this.residencialAddress3,
+      residencialAddress4: residencialAddress4 ?? this.residencialAddress4,
+      communicationAddress1:
+          communicationAddress1 ?? this.communicationAddress1,
+      communicationAddress2:
+          communicationAddress2 ?? this.communicationAddress2,
+      communicationAddress3:
+          communicationAddress3 ?? this.communicationAddress3,
+      communicationAddress4:
+          communicationAddress4 ?? this.communicationAddress4,
     );
   }
 
@@ -141,6 +181,15 @@ class UserProfile {
       'rewardBalance': rewardBalance,
       'referalList': referalList,
       'inviteCode': inviteCode,
+      'phone': phone,
+      'residencialAddress1': residencialAddress1,
+      'residencialAddress2': residencialAddress2,
+      'residencialAddress3': residencialAddress3,
+      'residencialAddress4': residencialAddress4,
+      'communicationAddress1': communicationAddress1,
+      'communicationAddress2': communicationAddress2,
+      'communicationAddress3': communicationAddress3,
+      'communicationAddress4': communicationAddress4,
     };
   }
 
@@ -175,6 +224,15 @@ class UserProfile {
       rewardBalance: map['rewardBalance']?.toDouble(),
       referalList: List<String>.from(map['referalList']),
       inviteCode: map['inviteCode'],
+      phone: map['phone'],
+      residencialAddress1: map['residencialAddress1'],
+      residencialAddress2: map['residencialAddress2'],
+      residencialAddress3: map['residencialAddress3'],
+      residencialAddress4: map['residencialAddress4'],
+      communicationAddress1: map['communicationAddress1'],
+      communicationAddress2: map['communicationAddress2'],
+      communicationAddress3: map['communicationAddress3'],
+      communicationAddress4: map['communicationAddress4'],
     );
   }
 
@@ -185,7 +243,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode, phone: $phone, residencialAddress1: $residencialAddress1, residencialAddress2: $residencialAddress2, residencialAddress3: $residencialAddress3, residencialAddress4: $residencialAddress4, communicationAddress1: $communicationAddress1, communicationAddress2: $communicationAddress2, communicationAddress3: $communicationAddress3, communicationAddress4: $communicationAddress4)';
   }
 
   @override
@@ -217,7 +275,16 @@ class UserProfile {
         other.setCount == setCount &&
         other.rewardBalance == rewardBalance &&
         listEquals(other.referalList, referalList) &&
-        other.inviteCode == inviteCode;
+        other.inviteCode == inviteCode &&
+        other.phone == phone &&
+        other.residencialAddress1 == residencialAddress1 &&
+        other.residencialAddress2 == residencialAddress2 &&
+        other.residencialAddress3 == residencialAddress3 &&
+        other.residencialAddress4 == residencialAddress4 &&
+        other.communicationAddress1 == communicationAddress1 &&
+        other.communicationAddress2 == communicationAddress2 &&
+        other.communicationAddress3 == communicationAddress3 &&
+        other.communicationAddress4 == communicationAddress4;
   }
 
   @override
@@ -246,6 +313,15 @@ class UserProfile {
         setCount.hashCode ^
         rewardBalance.hashCode ^
         referalList.hashCode ^
-        inviteCode.hashCode;
+        inviteCode.hashCode ^
+        phone.hashCode ^
+        residencialAddress1.hashCode ^
+        residencialAddress2.hashCode ^
+        residencialAddress3.hashCode ^
+        residencialAddress4.hashCode ^
+        communicationAddress1.hashCode ^
+        communicationAddress2.hashCode ^
+        communicationAddress3.hashCode ^
+        communicationAddress4.hashCode;
   }
 }

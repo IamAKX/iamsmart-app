@@ -94,46 +94,51 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
         //   obscure: false,
         //   icon: FontAwesomeIcons.coins,
         // ),
-        ActiveButton(
-            onPressed: () {
-              AwesomeDialog(
-                      context: context,
-                      dialogType: DialogType.question,
-                      animType: AnimType.bottomSlide,
-                      title: 'Do you want to submit?',
-                      autoDismiss: false,
-                      desc:
-                          'You are about to transfer $rupeeSymbol ${_amountCtrl.text} to user wallet, which can not be reversed.',
-                      btnCancelOnPress: () {
-                        context.pop();
-                      },
-                      btnOkOnPress: () async {
-                        if (_amountCtrl.text.isEmpty ||
-                            !isFloat(_amountCtrl.text)) {
-                          SnackBarService.instance
-                              .showSnackBarError('Amount is invalid');
+        Visibility(
+          visible: set!.status == SetStatus.running.name,
+          child: ActiveButton(
+              onPressed: () {
+                AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.question,
+                        animType: AnimType.bottomSlide,
+                        title: 'Do you want to submit?',
+                        autoDismiss: false,
+                        desc:
+                            'You are about to transfer $rupeeSymbol ${_amountCtrl.text} to user wallet, which can not be reversed.',
+                        btnCancelOnPress: () {
                           context.pop();
-                          return;
-                        }
+                        },
+                        btnOkOnPress: () async {
+                          if (_amountCtrl.text.isEmpty ||
+                              !isFloat(_amountCtrl.text)) {
+                            SnackBarService.instance
+                                .showSnackBarError('Amount is invalid');
+                            context.pop();
+                            return;
+                          }
 
-                        if (double.parse(_amountCtrl.text) > set!.amount!) {
-                          SnackBarService.instance.showSnackBarError(
-                              '$rupeeSymbol ${_amountCtrl.text} is more the available amount in set');
+                          if (double.parse(_amountCtrl.text) > set!.amount!) {
+                            SnackBarService.instance.showSnackBarError(
+                                '$rupeeSymbol ${_amountCtrl.text} is more the available amount in set');
+                            context.pop();
+                            return;
+                          }
+
+                          await DBService.instance.withdrawSet(
+                              set!, double.parse(_amountCtrl.text));
+                          _amountCtrl.text = '';
                           context.pop();
-                          return;
-                        }
-
-                        await DBService.instance
-                            .withdrawSet(set!, double.parse(_amountCtrl.text));
-                        _amountCtrl.text = '';
-                        context.pop();
-                      },
-                      onDismissCallback: (type) {},
-                      btnOkText: 'Submit',
-                      btnCancelText: 'Cancel')
-                  .show();
-            },
-            label: 'Complete set'),
+                        },
+                        onDismissCallback: (type) {
+                          context.pop();
+                        },
+                        btnOkText: 'Submit',
+                        btnCancelText: 'Cancel')
+                    .show();
+              },
+              label: 'Close set'),
+        ),
       ],
     );
   }

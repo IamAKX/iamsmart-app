@@ -25,6 +25,7 @@ class AiSetScreen extends StatefulWidget {
 class _AiSetScreenState extends State<AiSetScreen> {
   List<SetModel> setList = [];
   List<SetModel> runningList = [];
+  List<SetModel> pendingList = [];
   List<SetModel> completeList = [];
   UserProfile userProfile =
       UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
@@ -37,29 +38,33 @@ class _AiSetScreenState extends State<AiSetScreen> {
   getAllSet() async {
     setList = await DBService.instance.getAllSet(userProfile.id!);
     runningList =
-        setList.where((set) => set.status != SetStatus.complete.name).toList();
+        setList.where((set) => set.status == SetStatus.running.name).toList();
+    pendingList =
+        setList.where((set) => set.status == SetStatus.pending.name).toList();
     completeList =
-        setList.where((set) => set.status == SetStatus.complete.name).toList();
+        setList.where((set) => set.status == SetStatus.closed.name).toList();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Heading(title: 'AI Sets'),
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Running'),
-              Tab(text: 'Completed'),
+              Tab(text: 'Pending'),
+              Tab(text: 'Closed'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
             running(),
+            pending(),
             completed(),
           ],
         ),
@@ -71,10 +76,16 @@ class _AiSetScreenState extends State<AiSetScreen> {
     return ListView.builder(
       itemCount: completeList.length,
       itemBuilder: (context, index) => InkWell(
-        onTap: () => context.push(
-          AiSetDetailScreen.aiSetDetailScreenRoute
-              .replaceAll(':txnId', completeList[index].id!),
-        ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AiSetDetailScreen(
+                txnId: completeList[index].id!,
+              ),
+            ),
+          ).then((value) => getAllSet());
+        },
         child: Card(
           elevation: 5,
           margin: const EdgeInsets.symmetric(
@@ -123,14 +134,82 @@ class _AiSetScreenState extends State<AiSetScreen> {
     );
   }
 
+  pending() {
+    return ListView.builder(
+      itemCount: pendingList.length,
+      itemBuilder: (context, index) => InkWell(
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AiSetDetailScreen(
+                txnId: pendingList[index].id!,
+              ),
+            ),
+          ).then((value) => getAllSet());
+        },
+        child: Card(
+          elevation: 5,
+          margin: const EdgeInsets.symmetric(
+            horizontal: defaultPadding,
+            vertical: defaultPadding / 2,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(defaultPadding / 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Set #${pendingList[index].setNumber}',
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: primaryColorDark,
+                          ),
+                    ),
+                    const Spacer(),
+                    const Icon(
+                      FontAwesomeIcons.chevronRight,
+                      size: 10,
+                    ),
+                  ],
+                ),
+                detailItem('Invested Amount',
+                    '$rupeeSymbol ${currencyFormatter.format(pendingList[index].amount)}'),
+                detailItem('Income',
+                    '$rupeeSymbol ${currencyFormatter.format(pendingList[index].income)}'),
+                // detailItem('Total',
+                //     '$rupeeSymbol ${currencyFormatter.format((1000 * (index + 1)) + (0.5 * 1000 * (index + 1)))}'),
+                detailItem(
+                  'Status',
+                  pendingList[index].status!,
+                  valueColor: getStatusColor(pendingList[index].status!),
+                ),
+                detailItem('Investment Time',
+                    Utilities.formatDate(pendingList[index].createdAt!)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   running() {
     return ListView.builder(
       itemCount: runningList.length,
       itemBuilder: (context, index) => InkWell(
-        onTap: () => context.push(
-          AiSetDetailScreen.aiSetDetailScreenRoute
-              .replaceAll(':txnId', runningList[index].id!),
-        ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AiSetDetailScreen(
+                txnId: runningList[index].id!,
+              ),
+            ),
+          ).then((value) => getAllSet());
+        },
         child: Card(
           elevation: 5,
           margin: const EdgeInsets.symmetric(

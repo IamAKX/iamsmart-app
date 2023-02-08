@@ -194,6 +194,29 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 detailItem('Debit', transaction?.debitParty ?? ''),
                 detailItem(
                     'User Id', transaction?.user?.id?.substring(0, 10) ?? ''),
+                const SizedBox(
+                  height: defaultPadding,
+                ),
+                Visibility(
+                  visible: transaction?.status == PaymentStatus.rejected.name,
+                  child: Text(
+                    'Rejection reason',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(color: textColorLight),
+                  ),
+                ),
+                Visibility(
+                  visible: transaction?.status == PaymentStatus.rejected.name,
+                  child: Text(
+                    transaction?.rejectionComment ?? '',
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption
+                        ?.copyWith(color: textColorDark),
+                  ),
+                )
               ],
             ),
           ),
