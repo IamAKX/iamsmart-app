@@ -105,7 +105,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Text(
-            'Residencial Address',
+            'Residential Address',
             style: Theme.of(context).textTheme.subtitle2?.copyWith(
                   color: textColorLight,
                 ),

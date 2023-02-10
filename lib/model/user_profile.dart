@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserProfile {
@@ -8,10 +7,16 @@ class UserProfile {
   String? name;
   String? email;
   String? profileImage;
-  String? kycDocumentType;
-  String? kycId;
-  String? kycDocumentImageFront;
-  String? kycDocumentImageBack;
+  // String? kycDocumentType;
+  String? aadhaarId;
+  String? aadhaarDocumentImageFront;
+  String? aadhaarDocumentImageBack;
+  String? panId;
+  String? panDocumentImageFront;
+  String? panDocumentImageBack;
+  String? dlId;
+  String? dlDocumentImageFront;
+  String? dlDocumentImageBack;
   String? bankAccountName;
   String? bankIFSCCode;
   String? bankAccountNumber;
@@ -43,10 +48,15 @@ class UserProfile {
     this.name,
     this.email,
     this.profileImage,
-    this.kycDocumentType,
-    this.kycId,
-    this.kycDocumentImageFront,
-    this.kycDocumentImageBack,
+    this.aadhaarId,
+    this.aadhaarDocumentImageFront,
+    this.aadhaarDocumentImageBack,
+    this.panId,
+    this.panDocumentImageFront,
+    this.panDocumentImageBack,
+    this.dlId,
+    this.dlDocumentImageFront,
+    this.dlDocumentImageBack,
     this.bankAccountName,
     this.bankIFSCCode,
     this.bankAccountNumber,
@@ -80,10 +90,15 @@ class UserProfile {
     String? name,
     String? email,
     String? profileImage,
-    String? kycDocumentType,
-    String? kycId,
-    String? kycDocumentImageFront,
-    String? kycDocumentImageBack,
+    String? aadhaarId,
+    String? aadhaarDocumentImageFront,
+    String? aadhaarDocumentImageBack,
+    String? panId,
+    String? panDocumentImageFront,
+    String? panDocumentImageBack,
+    String? dlId,
+    String? dlDocumentImageFront,
+    String? dlDocumentImageBack,
     String? bankAccountName,
     String? bankIFSCCode,
     String? bankAccountNumber,
@@ -116,11 +131,18 @@ class UserProfile {
       name: name ?? this.name,
       email: email ?? this.email,
       profileImage: profileImage ?? this.profileImage,
-      kycDocumentType: kycDocumentType ?? this.kycDocumentType,
-      kycId: kycId ?? this.kycId,
-      kycDocumentImageFront:
-          kycDocumentImageFront ?? this.kycDocumentImageFront,
-      kycDocumentImageBack: kycDocumentImageBack ?? this.kycDocumentImageBack,
+      aadhaarId: aadhaarId ?? this.aadhaarId,
+      aadhaarDocumentImageFront:
+          aadhaarDocumentImageFront ?? this.aadhaarDocumentImageFront,
+      aadhaarDocumentImageBack:
+          aadhaarDocumentImageBack ?? this.aadhaarDocumentImageBack,
+      panId: panId ?? this.panId,
+      panDocumentImageFront:
+          panDocumentImageFront ?? this.panDocumentImageFront,
+      panDocumentImageBack: panDocumentImageBack ?? this.panDocumentImageBack,
+      dlId: dlId ?? this.dlId,
+      dlDocumentImageFront: dlDocumentImageFront ?? this.dlDocumentImageFront,
+      dlDocumentImageBack: dlDocumentImageBack ?? this.dlDocumentImageBack,
       bankAccountName: bankAccountName ?? this.bankAccountName,
       bankIFSCCode: bankIFSCCode ?? this.bankIFSCCode,
       bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
@@ -160,10 +182,15 @@ class UserProfile {
       'name': name,
       'email': email,
       'profileImage': profileImage,
-      'kycDocumentType': kycDocumentType,
-      'kycId': kycId,
-      'kycDocumentImageFront': kycDocumentImageFront,
-      'kycDocumentImageBack': kycDocumentImageBack,
+      'aadhaarId': aadhaarId,
+      'aadhaarDocumentImageFront': aadhaarDocumentImageFront,
+      'aadhaarDocumentImageBack': aadhaarDocumentImageBack,
+      'panId': panId,
+      'panDocumentImageFront': panDocumentImageFront,
+      'panDocumentImageBack': panDocumentImageBack,
+      'dlId': dlId,
+      'dlDocumentImageFront': dlDocumentImageFront,
+      'dlDocumentImageBack': dlDocumentImageBack,
       'bankAccountName': bankAccountName,
       'bankIFSCCode': bankIFSCCode,
       'bankAccountNumber': bankAccountNumber,
@@ -199,10 +226,15 @@ class UserProfile {
       name: map['name'],
       email: map['email'],
       profileImage: map['profileImage'],
-      kycDocumentType: map['kycDocumentType'],
-      kycId: map['kycId'],
-      kycDocumentImageFront: map['kycDocumentImageFront'],
-      kycDocumentImageBack: map['kycDocumentImageBack'],
+      aadhaarId: map['aadhaarId'],
+      aadhaarDocumentImageFront: map['aadhaarDocumentImageFront'],
+      aadhaarDocumentImageBack: map['aadhaarDocumentImageBack'],
+      panId: map['panId'],
+      panDocumentImageFront: map['panDocumentImageFront'],
+      panDocumentImageBack: map['panDocumentImageBack'],
+      dlId: map['dlId'],
+      dlDocumentImageFront: map['dlDocumentImageFront'],
+      dlDocumentImageBack: map['dlDocumentImageBack'],
       bankAccountName: map['bankAccountName'],
       bankIFSCCode: map['bankIFSCCode'],
       bankAccountNumber: map['bankAccountNumber'],
@@ -243,7 +275,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, kycDocumentType: $kycDocumentType, kycId: $kycId, kycDocumentImageFront: $kycDocumentImageFront, kycDocumentImageBack: $kycDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode, phone: $phone, residencialAddress1: $residencialAddress1, residencialAddress2: $residencialAddress2, residencialAddress3: $residencialAddress3, residencialAddress4: $residencialAddress4, communicationAddress1: $communicationAddress1, communicationAddress2: $communicationAddress2, communicationAddress3: $communicationAddress3, communicationAddress4: $communicationAddress4)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, aadhaarId: $aadhaarId, aadhaarDocumentImageFront: $aadhaarDocumentImageFront, aadhaarDocumentImageBack: $aadhaarDocumentImageBack, panId: $panId, panDocumentImageFront: $panDocumentImageFront, panDocumentImageBack: $panDocumentImageBack, dlId: $dlId, dlDocumentImageFront: $dlDocumentImageFront, dlDocumentImageBack: $dlDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode, phone: $phone, residencialAddress1: $residencialAddress1, residencialAddress2: $residencialAddress2, residencialAddress3: $residencialAddress3, residencialAddress4: $residencialAddress4, communicationAddress1: $communicationAddress1, communicationAddress2: $communicationAddress2, communicationAddress3: $communicationAddress3, communicationAddress4: $communicationAddress4)';
   }
 
   @override
@@ -255,10 +287,15 @@ class UserProfile {
         other.name == name &&
         other.email == email &&
         other.profileImage == profileImage &&
-        other.kycDocumentType == kycDocumentType &&
-        other.kycId == kycId &&
-        other.kycDocumentImageFront == kycDocumentImageFront &&
-        other.kycDocumentImageBack == kycDocumentImageBack &&
+        other.aadhaarId == aadhaarId &&
+        other.aadhaarDocumentImageFront == aadhaarDocumentImageFront &&
+        other.aadhaarDocumentImageBack == aadhaarDocumentImageBack &&
+        other.panId == panId &&
+        other.panDocumentImageFront == panDocumentImageFront &&
+        other.panDocumentImageBack == panDocumentImageBack &&
+        other.dlId == dlId &&
+        other.dlDocumentImageFront == dlDocumentImageFront &&
+        other.dlDocumentImageBack == dlDocumentImageBack &&
         other.bankAccountName == bankAccountName &&
         other.bankIFSCCode == bankIFSCCode &&
         other.bankAccountNumber == bankAccountNumber &&
@@ -293,10 +330,15 @@ class UserProfile {
         name.hashCode ^
         email.hashCode ^
         profileImage.hashCode ^
-        kycDocumentType.hashCode ^
-        kycId.hashCode ^
-        kycDocumentImageFront.hashCode ^
-        kycDocumentImageBack.hashCode ^
+        aadhaarId.hashCode ^
+        aadhaarDocumentImageFront.hashCode ^
+        aadhaarDocumentImageBack.hashCode ^
+        panId.hashCode ^
+        panDocumentImageFront.hashCode ^
+        panDocumentImageBack.hashCode ^
+        dlId.hashCode ^
+        dlDocumentImageFront.hashCode ^
+        dlDocumentImageBack.hashCode ^
         bankAccountName.hashCode ^
         bankIFSCCode.hashCode ^
         bankAccountNumber.hashCode ^

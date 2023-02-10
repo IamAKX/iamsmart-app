@@ -17,31 +17,72 @@ class StorageService {
     return downloadLink;
   }
 
-  static Future<Map<String, String>> uploadKycDocuments(File fileFront,
-      File fileBack, String documentType, String extension) async {
+  static Future<Map<String, String>> uploadKycDocuments(
+    File aadhaarFront,
+    File aadhaarBack,
+    File panfileFront,
+    File panfileBack,
+    File? dlfileFront,
+    File? dlfileBack,
+  ) async {
     Map<String, String> linkMap = {
-      'kycDocumentImageFront': '',
-      'kycDocumentImageBack': ''
+      'aadhaarFront': '',
+      'aadhaarBack': '',
+      'panfileFront': '',
+      'panfileBack': '',
+      'dlfileFront': '',
+      'dlfileBack': '',
     };
     UserProfile profile =
         UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
 
     // Uploading front side image
-    String path =
-        'kycDocument/${profile.email}/${documentType}_front.$extension';
+    String path = 'kycDocument/${profile.email}/adhaar_front';
     Reference ref = FirebaseStorage.instance.ref().child(path);
-    UploadTask? uploadTask = ref.putFile(fileFront);
+    UploadTask? uploadTask = ref.putFile(aadhaarFront);
     var snapshot = await uploadTask.whenComplete(() {});
     var downloadLink = await snapshot.ref.getDownloadURL();
-    linkMap['kycDocumentImageFront'] = downloadLink;
+    linkMap['aadhaarFront'] = downloadLink;
 
     // Uploading back side image
-    path = 'kycDocument/${profile.email}/${documentType}_back.$extension';
+    path = 'kycDocument/${profile.email}/adhaar_back';
     ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(fileBack);
+    uploadTask = ref.putFile(aadhaarBack);
     snapshot = await uploadTask.whenComplete(() {});
     downloadLink = await snapshot.ref.getDownloadURL();
-    linkMap['kycDocumentImageBack'] = downloadLink;
+    linkMap['aadhaarBack'] = downloadLink;
+
+    // PAN
+    path = 'kycDocument/${profile.email}/pan_back';
+    ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(panfileFront);
+    snapshot = await uploadTask.whenComplete(() {});
+    downloadLink = await snapshot.ref.getDownloadURL();
+    linkMap['panfileFront'] = downloadLink;
+
+    path = 'kycDocument/${profile.email}/pan_back';
+    ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(panfileBack);
+    snapshot = await uploadTask.whenComplete(() {});
+    downloadLink = await snapshot.ref.getDownloadURL();
+    linkMap['panfileBack'] = downloadLink;
+
+    if (dlfileFront != null && dlfileBack != null) {
+      path = 'kycDocument/${profile.email}/dl_back';
+      ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(dlfileFront);
+      snapshot = await uploadTask.whenComplete(() {});
+      downloadLink = await snapshot.ref.getDownloadURL();
+      linkMap['dlfileFront'] = downloadLink;
+
+      path = 'kycDocument/${profile.email}/dl_back';
+      ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(dlfileBack);
+      snapshot = await uploadTask.whenComplete(() {});
+      downloadLink = await snapshot.ref.getDownloadURL();
+      linkMap['dlfileBack'] = downloadLink;
+    }
+    //DL
 
     return linkMap;
   }
