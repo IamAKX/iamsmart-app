@@ -60,6 +60,14 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     _bankAccountNumberCtrl.text = userProfile.bankAccountNumber ?? '';
     _bankBranchNameCtrl.text = userProfile.bankBranchCode ?? '';
     _bankIFSCCtrl.text = userProfile.bankIFSCCode ?? '';
+    _rAddress1.text = userProfile.residencialAddress1 ?? '';
+    _rAddress2.text = userProfile.residencialAddress2 ?? '';
+    _rAddress3.text = userProfile.residencialAddress3 ?? '';
+    _rAddress4.text = userProfile.residencialAddress4 ?? '';
+    _cAddress1.text = userProfile.communicationAddress1 ?? '';
+    _cAddress2.text = userProfile.communicationAddress2 ?? '';
+    _cAddress3.text = userProfile.communicationAddress3 ?? '';
+    _cAddress4.text = userProfile.communicationAddress4 ?? '';
   }
 
   getBody() {
@@ -196,28 +204,28 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           controller: _bankAccountNameCtrl,
           keyboardType: TextInputType.name,
           obscure: false,
-          icon: FontAwesomeIcons.solidUser,
+          icon: FontAwesomeIcons.buildingColumns,
         ),
         CustomTextField(
           hint: 'Bank Account Number',
           controller: _bankAccountNumberCtrl,
           keyboardType: TextInputType.name,
           obscure: false,
-          icon: FontAwesomeIcons.solidUser,
+          icon: FontAwesomeIcons.buildingColumns,
         ),
         CustomTextField(
           hint: 'Bank Branch Name',
           controller: _bankBranchNameCtrl,
           keyboardType: TextInputType.name,
           obscure: false,
-          icon: FontAwesomeIcons.solidUser,
+          icon: FontAwesomeIcons.buildingColumns,
         ),
         CustomTextField(
           hint: 'Branch IFSC Code',
           controller: _bankIFSCCtrl,
           keyboardType: TextInputType.name,
           obscure: false,
-          icon: FontAwesomeIcons.solidUser,
+          icon: FontAwesomeIcons.buildingColumns,
         ),
         const SizedBox(
           height: defaultPadding,

@@ -16,6 +16,7 @@ import 'package:iamsmart/screen/setting/profile_details_screen.dart';
 import 'package:iamsmart/screen/transaction/transaction_detail_screen.dart';
 import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen.dart';
 import 'package:iamsmart/util/preference_key.dart';
+import 'package:iamsmart/withdraw_from_user_wallet/withdraw_from_user_wallet_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -101,6 +102,12 @@ final GoRouter router = GoRouter(
       path: KycDocumentScreen.kycDocumentRoute,
       builder: (BuildContext context, GoRouterState state) {
         return const KycDocumentScreen();
+      },
+    ),
+    GoRoute(
+      path: WithdrawFromUserWalletScreen.transferFromUserWalletRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return const WithdrawFromUserWalletScreen();
       },
     ),
   ],

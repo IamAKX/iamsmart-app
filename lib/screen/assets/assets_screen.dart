@@ -16,6 +16,7 @@ import 'package:iamsmart/util/constants.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/widget/heading.dart';
+import 'package:iamsmart/withdraw_from_user_wallet/withdraw_from_user_wallet_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../model/transaction_model.dart';
@@ -406,6 +407,26 @@ class _AssetsScreenState extends State<AssetsScreen>
                     tooltip: 'Invest',
                     icon: const Icon(
                       FontAwesomeIcons.moneyBillTransfer,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: defaultPadding / 2,
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      if (await Utilities.checkForKycPrompt(context)) {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const WithdrawFromUserWalletScreen()),
+                        ).then((value) => loadUserProfile());
+                      }
+                    },
+                    tooltip: 'Withdraw',
+                    icon: const Icon(
+                      FontAwesomeIcons.handHoldingDollar,
                       color: Colors.white,
                     ),
                   )

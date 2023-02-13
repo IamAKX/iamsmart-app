@@ -135,7 +135,7 @@ class DBService {
       status: PaymentStatus.pending.name,
       transactionActivity: [
         TransactionActivityModel(
-          comment: 'Redeem from ${set.userProfile!.name!} #${set.setNumber}',
+          comment: 'Redeem from ${set.userProfile!.name!} #${set.setNumber} | $rupeeSymbol ${set.amount}',
           createdAt: DateTime.now(),
         )
       ],

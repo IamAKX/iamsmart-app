@@ -33,6 +33,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   List<TransactionModel> depositList = [];
   List<TransactionModel> transferList = [];
   List<TransactionModel> redeemList = [];
+  List<TransactionModel> withdrawList = [];
   UserProfile userProfile =
       UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
 
@@ -60,6 +61,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
             txn.debitParty! == Party.aiWallet.name &&
             txn.creditParty! == Party.userWallet.name)
         .toList();
+    withdrawList = txnList
+        .where((txn) =>
+            txn.debitParty! == Party.userWallet.name &&
+            txn.creditParty! == Party.userExternal.name)
+        .toList();
 
     setState(() {});
   }
@@ -74,15 +80,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
       },
       child: DefaultTabController(
         initialIndex: widget.txnIndex,
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             title: const Heading(title: 'Record'),
             bottom: const TabBar(
+              isScrollable: true,
               tabs: [
                 Tab(text: 'Deposit'),
                 Tab(text: 'Transfer'),
                 Tab(text: 'Redeem'),
+                Tab(text: 'Withdraw'),
                 Tab(text: 'All'),
               ],
             ),
@@ -92,6 +100,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               deposit(),
               transfer(),
               redeem(),
+              withdraw(),
               all(),
             ],
           ),
@@ -363,5 +372,72 @@ class _TransactionScreenState extends State<TransactionScreen> {
               height: 1,
             ),
         itemCount: depositList.length);
+  }
+
+  withdraw() {
+    if (withdrawList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Transaction',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      );
+    }
+    return ListView.separated(
+        itemBuilder: (context, index) => ListTile(
+              leading: CircleAvatar(
+                backgroundColor: primaryColor.withOpacity(0.15),
+                child: Icon(
+                  Utilities.getIconForTransaction(
+                      withdrawList.elementAt(index)),
+                  size: 18,
+                  color: bottomNavbarActiveColor,
+                ),
+              ),
+              title: Text(
+                withdrawList
+                        .elementAt(index)
+                        .transactionActivity
+                        ?.first
+                        .comment ??
+                    '',
+              ),
+              subtitle: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    withdrawList.elementAt(index).status ?? '',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: getStatusColor(
+                            withdrawList.elementAt(index).status ?? '')),
+                  ),
+                  Text(
+                    timeago.format(withdrawList.elementAt(index).createdAt!),
+                    style: Theme.of(context).textTheme.caption,
+                  )
+                ],
+              ),
+              isThreeLine: true,
+              trailing: Hero(
+                tag: withdrawList.elementAt(index).id!,
+                child: Text(
+                  '$rupeeSymbol ${currencyFormatter.format(withdrawList.elementAt(index).amount!)}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+              onTap: () => context.push(
+                TransactionDetailScreen.transactionDetailScreenRoute
+                    .replaceFirst(':txnId', withdrawList.elementAt(index).id!),
+              ),
+            ),
+        separatorBuilder: (context, index) => const Divider(
+              color: dividerColor,
+              height: 1,
+            ),
+        itemCount: withdrawList.length);
   }
 }

@@ -237,7 +237,7 @@ class _DepositeToUserWalletScreenState
                               status: PaymentStatus.pending.name,
                               transactionActivity: [
                                 TransactionActivityModel(
-                                  comment: 'Depost to user wallet',
+                                  comment: 'Depost to user wallet | $rupeeSymbol ${_amountCtrl.text}',
                                   createdAt: DateTime.now(),
                                 )
                               ],
