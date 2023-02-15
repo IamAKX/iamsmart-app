@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,27 +26,47 @@ class KycDocumentScreen extends StatefulWidget {
 }
 
 class _KycDocumentScreenState extends State<KycDocumentScreen> {
+  UserProfile? userProfile;
+
   final TextEditingController _kycAadhaarNumber = TextEditingController();
   bool isAadhaarImageSelectedFront = false;
-  late File? imageAadhaarFileFront;
+  File? imageAadhaarFileFront;
   bool isAadhaarImageSelectedBack = false;
-  late File? imageAadhaarFileBack;
+  File? imageAadhaarFileBack;
 
   // PAN
   final TextEditingController _kycPanNumber = TextEditingController();
   bool isPanImageSelectedFront = false;
-  late File? imagePanFileFront;
+  File? imagePanFileFront;
   bool isPanImageSelectedBack = false;
-  late File? imagePanFileBack;
+  File? imagePanFileBack;
 
   // DL
   final TextEditingController _kycDLNumber = TextEditingController();
   bool isDLImageSelectedFront = false;
-  late File? imageDLFileFront;
+  File? imageDLFileFront;
   bool isDLImageSelectedBack = false;
-  late File? imageDLFileBack;
+  File? imageDLFileBack;
 
   bool isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  loadProfile() async {
+    userProfile = await DBService.instance.getUserById(
+        UserProfile.fromJson(prefs.getString(PreferenceKey.user)!).id!);
+    prefs.setString(PreferenceKey.user, userProfile!.toJson());
+    if (userProfile?.isKycDone ?? false) {
+      _kycAadhaarNumber.text = userProfile?.aadhaarId ?? '';
+      _kycPanNumber.text = userProfile?.panId ?? '';
+      _kycDLNumber.text = userProfile?.dlId ?? '';
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +87,13 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
           child: Text('Aadhaar Number'),
         ),
         CustomTextField(
-            hint: 'Aadhaar Number',
-            controller: _kycAadhaarNumber,
-            keyboardType: TextInputType.name,
-            obscure: false,
-            icon: FontAwesomeIcons.userShield),
+          hint: 'Aadhaar Number',
+          controller: _kycAadhaarNumber,
+          keyboardType: TextInputType.name,
+          obscure: false,
+          icon: FontAwesomeIcons.userShield,
+          enabled: !(userProfile?.isKycDone ?? false),
+        ),
         const Align(
           alignment: Alignment.center,
           child: Padding(
@@ -92,103 +115,107 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
             SizedBox(
               height: 100,
               width: 150,
-              child: !isAadhaarImageSelectedFront
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imageAadhaarFileFront = File(image.path);
-
-                          setState(() {
-                            isAadhaarImageSelectedFront = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imageAadhaarFileFront!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.aadhaarDocumentImageFront)
+                  : !isAadhaarImageSelectedFront
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    imageAadhaarFileFront = null;
-                                    isAadhaarImageSelectedFront = false;
-                                  });
-                                },
-                                icon: const Icon(
-                                  FontAwesomeIcons.trash,
-                                  color: Colors.red,
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imageAadhaarFileFront = File(image.path);
+
+                              setState(() {
+                                isAadhaarImageSelectedFront = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imageAadhaarFileFront!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        imageAadhaarFileFront = null;
+                                        isAadhaarImageSelectedFront = false;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.trash,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
             ),
             SizedBox(
               height: 100,
               width: 150,
-              child: !isAadhaarImageSelectedBack
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imageAadhaarFileBack = File(image.path);
-                          setState(() {
-                            isAadhaarImageSelectedBack = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imageAadhaarFileBack!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.aadhaarDocumentImageBack)
+                  : !isAadhaarImageSelectedBack
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    imageAadhaarFileBack = null;
-                                    isAadhaarImageSelectedBack = false;
-                                  });
-                                },
-                                icon: const Icon(
-                                  FontAwesomeIcons.trash,
-                                  color: Colors.red,
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imageAadhaarFileBack = File(image.path);
+                              setState(() {
+                                isAadhaarImageSelectedBack = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imageAadhaarFileBack!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        imageAadhaarFileBack = null;
+                                        isAadhaarImageSelectedBack = false;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.trash,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
             ),
           ],
         ),
@@ -205,11 +232,13 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
           child: Text('PAN Number'),
         ),
         CustomTextField(
-            hint: 'PAN Number',
-            controller: _kycPanNumber,
-            keyboardType: TextInputType.name,
-            obscure: false,
-            icon: FontAwesomeIcons.userShield),
+          hint: 'PAN Number',
+          controller: _kycPanNumber,
+          keyboardType: TextInputType.name,
+          obscure: false,
+          icon: FontAwesomeIcons.userShield,
+          enabled: !(userProfile?.isKycDone ?? false),
+        ),
         const Align(
           alignment: Alignment.center,
           child: Padding(
@@ -231,104 +260,108 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
             SizedBox(
               height: 100,
               width: 150,
-              child: !isPanImageSelectedFront
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imagePanFileFront = File(image.path);
-
-                          setState(() {
-                            isPanImageSelectedFront = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imagePanFileFront!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.panDocumentImageFront)
+                  : !isPanImageSelectedFront
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    imagePanFileFront = null;
-                                    isPanImageSelectedFront = false;
-                                  });
-                                },
-                                icon: const Icon(
-                                  FontAwesomeIcons.trash,
-                                  color: Colors.red,
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imagePanFileFront = File(image.path);
+
+                              setState(() {
+                                isPanImageSelectedFront = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imagePanFileFront!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        imagePanFileFront = null;
+                                        isPanImageSelectedFront = false;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.trash,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
             ),
             SizedBox(
               height: 100,
               width: 150,
-              child: !isPanImageSelectedBack
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imagePanFileBack = File(image.path);
-                          setState(() {
-                            isPanImageSelectedBack = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imagePanFileBack!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.panDocumentImageBack)
+                  : !isPanImageSelectedBack
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  imagePanFileBack = null;
-                                  isPanImageSelectedBack = false;
-                                });
-                              },
-                              icon: const Icon(
-                                FontAwesomeIcons.trash,
-                                color: Colors.red,
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imagePanFileBack = File(image.path);
+                              setState(() {
+                                isPanImageSelectedBack = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imagePanFileBack!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      imagePanFileBack = null;
+                                      isPanImageSelectedBack = false;
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    FontAwesomeIcons.trash,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
             ),
           ],
         ),
@@ -345,11 +378,13 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
           child: Text('Driving Lisence Number'),
         ),
         CustomTextField(
-            hint: 'Driving Lisence Number',
-            controller: _kycDLNumber,
-            keyboardType: TextInputType.name,
-            obscure: false,
-            icon: FontAwesomeIcons.userShield),
+          hint: 'Driving Lisence Number',
+          controller: _kycDLNumber,
+          keyboardType: TextInputType.name,
+          obscure: false,
+          icon: FontAwesomeIcons.userShield,
+          enabled: !(userProfile?.isKycDone ?? false),
+        ),
         const Align(
           alignment: Alignment.center,
           child: Padding(
@@ -371,103 +406,107 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
             SizedBox(
               height: 100,
               width: 150,
-              child: !isDLImageSelectedFront
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imageDLFileFront = File(image.path);
-
-                          setState(() {
-                            isDLImageSelectedFront = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imageDLFileFront!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.dlDocumentImageFront)
+                  : !isDLImageSelectedFront
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    imageDLFileFront = null;
-                                    isDLImageSelectedFront = false;
-                                  });
-                                },
-                                icon: const Icon(
-                                  FontAwesomeIcons.trash,
-                                  color: Colors.red,
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imageDLFileFront = File(image.path);
+
+                              setState(() {
+                                isDLImageSelectedFront = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imageDLFileFront!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        imageDLFileFront = null;
+                                        isDLImageSelectedFront = false;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.trash,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
             ),
             SizedBox(
               height: 100,
               width: 150,
-              child: !isDLImageSelectedBack
-                  ? InkWell(
-                      child: Image.asset(
-                        'assets/image/add-image.png',
-                      ),
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          imageDLFileBack = File(image.path);
-                          setState(() {
-                            isDLImageSelectedBack = true;
-                          });
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 100,
-                      width: 150,
-                      child: Stack(
-                        children: [
-                          Image.file(
-                            imageDLFileBack!,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
+              child: userProfile?.isKycDone ?? false
+                  ? getLoadedImage(userProfile?.dlDocumentImageBack)
+                  : !isDLImageSelectedBack
+                      ? InkWell(
+                          child: Image.asset(
+                            'assets/image/add-image.png',
                           ),
-                          Positioned(
-                            right: 1,
-                            top: 1,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    imageDLFileBack = null;
-                                    isDLImageSelectedBack = false;
-                                  });
-                                },
-                                icon: const Icon(
-                                  FontAwesomeIcons.trash,
-                                  color: Colors.red,
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              imageDLFileBack = File(image.path);
+                              setState(() {
+                                isDLImageSelectedBack = true;
+                              });
+                            }
+                          },
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                imageDLFileBack!,
+                                height: 100,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 1,
+                                top: 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        imageDLFileBack = null;
+                                        isDLImageSelectedBack = false;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.trash,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
             ),
           ],
         ),
@@ -478,58 +517,62 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
         const SizedBox(
           height: defaultPadding,
         ),
-        ActiveButton(
-          onPressed: () async {
-            if (_kycAadhaarNumber.text.isEmpty ||
-                imageAadhaarFileBack == null ||
-                imageAadhaarFileFront == null ||
-                _kycPanNumber.text.isEmpty ||
-                imagePanFileBack == null ||
-                imagePanFileFront == null) {
-              SnackBarService.instance
-                  .showSnackBarError('Aadhaar and PAN fields are mandatory');
-              return;
-            }
-            setState(() {
-              isSaving = true;
-            });
-            await StorageService.uploadKycDocuments(
-                    imageAadhaarFileFront!,
-                    imageAadhaarFileBack!,
-                    imagePanFileFront!,
-                    imagePanFileBack!,
-                    imageDLFileFront,
-                    imageDLFileBack)
-                .then((map) async {
-              UserProfile userProfile =
-                  UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
-
-              if (await Permission.location.request().isGranted) {
-                Position position = await Geolocator.getCurrentPosition(
-                    desiredAccuracy: LocationAccuracy.high);
-                userProfile.latitude = position.latitude;
-                userProfile.longitude = position.longitude;
+        Visibility(
+          visible: !(userProfile?.isKycDone ?? false),
+          child: ActiveButton(
+            onPressed: () async {
+              if (_kycAadhaarNumber.text.isEmpty ||
+                  imageAadhaarFileBack == null ||
+                  imageAadhaarFileFront == null ||
+                  _kycPanNumber.text.isEmpty ||
+                  imagePanFileBack == null ||
+                  imagePanFileFront == null) {
+                SnackBarService.instance
+                    .showSnackBarError('Aadhaar and PAN fields are mandatory');
+                return;
               }
-              userProfile.aadhaarId = _kycAadhaarNumber.text;
-              userProfile.panId = _kycPanNumber.text;
-              userProfile.dlId = _kycDLNumber.text;
-              userProfile.aadhaarDocumentImageBack = map['aadhaarBack'];
-              userProfile.aadhaarDocumentImageFront = map['aadhaarFront'];
-              userProfile.panDocumentImageBack = map['panfileBack'];
-              userProfile.panDocumentImageFront = map['panfileFront'];
-              userProfile.dlDocumentImageBack = map['dlfileBack'];
-              userProfile.dlDocumentImageFront = map['dlfileFront'];
-              userProfile.isKycDone = false;
-              // ignore: use_build_context_synchronously
-              await DBService.instance
-                  .updateProfile(userProfile.id!, userProfile.toMap(), context);
-            });
-            setState(() {
-              isSaving = false;
-            });
-          },
-          label: 'Update',
-          isDisabled: isSaving,
+              setState(() {
+                isSaving = true;
+              });
+              await StorageService.uploadKycDocuments(
+                      imageAadhaarFileFront!,
+                      imageAadhaarFileBack!,
+                      imagePanFileFront!,
+                      imagePanFileBack!,
+                      imageDLFileFront,
+                      imageDLFileBack)
+                  .then((map) async {
+                UserProfile userProfile =
+                    UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+
+                if (await Permission.location.request().isGranted) {
+                  Position position = await Geolocator.getCurrentPosition(
+                      desiredAccuracy: LocationAccuracy.high);
+                  userProfile.latitude = position.latitude;
+                  userProfile.longitude = position.longitude;
+                }
+                userProfile.aadhaarId = _kycAadhaarNumber.text;
+                userProfile.panId = _kycPanNumber.text;
+                userProfile.dlId = _kycDLNumber.text;
+                userProfile.aadhaarDocumentImageBack = map['aadhaarBack'];
+                userProfile.aadhaarDocumentImageFront = map['aadhaarFront'];
+                userProfile.panDocumentImageBack = map['panfileBack'];
+                userProfile.panDocumentImageFront = map['panfileFront'];
+                userProfile.dlDocumentImageBack = map['dlfileBack'];
+                userProfile.dlDocumentImageFront = map['dlfileFront'];
+                userProfile.isKycDone = false;
+                // ignore: use_build_context_synchronously
+                await DBService.instance.updateProfile(
+                    userProfile.id!, userProfile.toMap(), context);
+              });
+              setState(() {
+                isSaving = false;
+                loadProfile();
+              });
+            },
+            label: 'Update',
+            isDisabled: isSaving,
+          ),
         )
       ],
     );
@@ -547,6 +590,26 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
           'Back Side',
         ),
       ],
+    );
+  }
+
+  getLoadedImage(String? imgLink) {
+    return SizedBox(
+      height: 100,
+      width: 150,
+      child: CachedNetworkImage(
+        imageUrl: imgLink ?? '',
+        height: 100,
+        width: 150,
+        fit: BoxFit.cover,
+        placeholder: (context, url) =>
+            const Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => Image.asset(
+          'assets/image/add-image.png',
+          height: 100,
+          width: 150,
+        ),
+      ),
     );
   }
 }

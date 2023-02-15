@@ -102,16 +102,16 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance.showSnackBarError('Enter valid email');
       return false;
     }
-    if (!isAlphanumeric(password)) {
+    if (password.trim().isEmpty || password.trim().length < 8) {
       SnackBarService.instance
-          .showSnackBarError('Enter alpha numeric password');
+          .showSnackBarError('Password must be 8 character long');
       return false;
     }
     status = AuthStatus.authenticating;
     notifyListeners();
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: email.trim(), password: password.trim());
       user = result.user;
       status = AuthStatus.authenticated;
       user!.updateDisplayName(name);
