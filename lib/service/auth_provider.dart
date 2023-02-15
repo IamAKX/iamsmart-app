@@ -59,9 +59,8 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance.showSnackBarError('Enter valid email');
       return;
     }
-    if (!isAlphanumeric(password)) {
-      SnackBarService.instance
-          .showSnackBarError('Enter alpha numeric password');
+    if (password.isEmpty) {
+      SnackBarService.instance.showSnackBarError('Enter password');
       return;
     }
     status = AuthStatus.authenticating;
@@ -93,7 +92,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> registerUserWithEmailAndPassword(
-      String name, String email, String password) async {
+      String name, String email, String password, String refCode) async {
     if (name.isEmpty) {
       SnackBarService.instance.showSnackBarError('Enter Full name');
       return false;
@@ -106,6 +105,16 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance
           .showSnackBarError('Password must be 8 character long');
       return false;
+    }
+    UserProfile? referredByUser;
+
+    if (refCode.trim().isNotEmpty) {
+      referredByUser =
+          await DBService.instance.getUserByRefcode(refCode.trim());
+      if (referredByUser == null) {
+        SnackBarService.instance.showSnackBarError('Invalid referral code');
+        return false;
+      }
     }
     status = AuthStatus.authenticating;
     notifyListeners();
@@ -148,8 +157,9 @@ class AuthProvider extends ChangeNotifier {
         referalList: [],
         setCount: 0,
         rewardBalance: 0.0,
+        referredByUserId: referredByUser?.id ?? '',
       );
-      await DBService.instance.createUser(userProfile).then(
+      await DBService.instance.createUser(userProfile, referredByUser).then(
           (value) => prefs.setString(PreferenceKey.user, userProfile.toJson()));
 
       notifyListeners();

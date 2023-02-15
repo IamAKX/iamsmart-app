@@ -24,8 +24,13 @@ class DBService {
     _db = FirebaseFirestore.instance;
   }
 
-  Future<void> createUser(UserProfile user) async {
+  Future<void> createUser(UserProfile user, UserProfile? referedBy) async {
     await _db.collection(userCollection).doc(user.id).set(user.toMap());
+    if (referedBy != null) {
+      await _db.collection(userCollection).doc(referedBy.id).update({
+        'referalList': FieldValue.arrayUnion([user.id]),
+      });
+    }
   }
 
   Future<void> updateLastLoginTime(String userId) async {
@@ -48,6 +53,20 @@ class DBService {
       user = UserProfile.fromMap(userMap);
     });
 
+    return user;
+  }
+
+  Future<UserProfile?> getUserByRefcode(String refCode) async {
+    UserProfile? user;
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(userCollection)
+        .where('inviteCode', isEqualTo: refCode)
+        .get();
+
+    if (querySnapshot.size > 0) {
+      user = UserProfile.fromMap(querySnapshot.docs.first.data());
+    }
     return user;
   }
 
@@ -135,7 +154,8 @@ class DBService {
       status: PaymentStatus.pending.name,
       transactionActivity: [
         TransactionActivityModel(
-          comment: 'Redeem from ${set.userProfile!.name!} #${set.setNumber} | $rupeeSymbol ${set.amount}',
+          comment:
+              'Redeem from ${set.userProfile!.name!} #${set.setNumber} | $rupeeSymbol ${set.amount}',
           createdAt: DateTime.now(),
         )
       ],
@@ -165,6 +185,27 @@ class DBService {
         .where('user.id', isEqualTo: userId)
         .where('createdAt',
             isGreaterThanOrEqualTo: today.millisecondsSinceEpoch)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    txnList = querySnapshot.docs
+        .map((txn) => TransactionModel.fromMap(txn.data()))
+        .toList();
+    return txnList;
+  }
+
+  Future<List<TransactionModel>> getCurrentDateRewardTransactions(
+      String userId, int timeInEpoch, int endTime) async {
+    List<TransactionModel> txnList = [];
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(txnCollection)
+        .where('user.id', isEqualTo: userId)
+        .where('createdAt', isGreaterThanOrEqualTo: timeInEpoch)
+        .where('createdAt', isLessThan: endTime)
+        .where('assignedTo', isEqualTo: Party.userWallet.name)
+        .where('creditParty', isEqualTo: Party.userWallet.name)
+        .where('debitParty', isEqualTo: Party.reward.name)
         .orderBy('createdAt', descending: true)
         .get();
 

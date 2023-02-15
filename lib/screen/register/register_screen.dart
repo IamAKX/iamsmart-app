@@ -23,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
   final TextEditingController _nameCtrl = TextEditingController();
+  final TextEditingController _refCodeCtrl = TextEditingController();
 
   late AuthProvider _auth;
 
@@ -41,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Hero(
           tag: 'header',
           child: Container(
-            height: 150.0,
+            height: 100.0,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -81,6 +82,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscure: true,
                 icon: FontAwesomeIcons.lock,
               ),
+              CustomTextField(
+                hint: 'Referral Code',
+                controller: _refCodeCtrl,
+                keyboardType: TextInputType.name,
+                obscure: false,
+                icon: Icons.discount,
+              ),
               const SizedBox(
                 height: defaultPadding / 2,
               ),
@@ -90,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   if (_auth.status != AuthStatus.authenticating) {
                     _auth
                         .registerUserWithEmailAndPassword(
-                            _nameCtrl.text, _emailCtrl.text, _passwordCtrl.text)
+                            _nameCtrl.text, _emailCtrl.text, _passwordCtrl.text,_refCodeCtrl.text)
                         .then((value) {
                       if (value) {
                         context.go(LoginScreen.loginRoute);

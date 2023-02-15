@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none"
 
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: ">=2.18.6 <3.0.0"
@@ -21,6 +21,7 @@ dependencies:
   flashy_tab_bar2: ^0.0.6
   flutter:
     sdk: flutter
+  flutter_share: ^2.0.0
   flutter_svg: ^1.1.6
   font_awesome_flutter: ^10.3.0
   geolocator: ^9.0.2

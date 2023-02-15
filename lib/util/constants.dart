@@ -31,7 +31,7 @@ enum PaymentStatus {
   withdrawn
 }
 
-enum Party { userExternal, userWallet, aiWallet, admin }
+enum Party { userExternal, userWallet, aiWallet, admin, reward }
 
 enum SetStatus { running, partial, closed, pending }
 

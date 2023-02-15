@@ -32,11 +32,19 @@ class Utilities {
         txn.creditParty == Party.userExternal.name) {
       return FontAwesomeIcons.coins;
     }
+    if (txn.debitParty == Party.reward.name &&
+        txn.creditParty == Party.userWallet.name) {
+      return FontAwesomeIcons.tags;
+    }
     return FontAwesomeIcons.circleDollarToSlot;
   }
 
   static String formatDate(DateTime date) {
     return DateFormat('dd MMM yyyy, hh:mm a').format(date);
+  }
+
+  static String formatDateShort(DateTime date) {
+    return DateFormat('dd MMM').format(date);
   }
 
   static String generateInviteCode() {

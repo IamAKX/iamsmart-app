@@ -117,10 +117,16 @@ class _WithdrawFromUserWalletScreenState
               SnackBarService.instance.showSnackBarError('Amount is invalid');
               return;
             }
+
             if (double.parse(_amountCtrl.text) >
                 userProfile.userWalletBalance!) {
               SnackBarService.instance.showSnackBarError(
                   'You can transfer at max $rupeeSymbol ${currencyFormatter.format(userProfile.userWalletBalance)}');
+              return;
+            }
+            if (double.parse(_amountCtrl.text) < 100) {
+              SnackBarService.instance.showSnackBarError(
+                  'Minimum transaction amount is $rupeeSymbol 100');
               return;
             }
             AwesomeDialog(
