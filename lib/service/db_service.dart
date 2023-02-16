@@ -10,6 +10,7 @@ import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../model/faq_model.dart';
 import '../model/transaction_activity_model.dart';
 import '../util/constants.dart';
 import '../util/email_generator.dart';
@@ -21,6 +22,7 @@ class DBService {
   String userCollection = 'users';
   String txnCollection = 'transactions';
   String setCollection = 'sets';
+  String faqCollection = 'faq';
 
   DBService() {
     _db = FirebaseFirestore.instance;
@@ -217,5 +219,16 @@ class DBService {
         .map((txn) => TransactionModel.fromMap(txn.data()))
         .toList();
     return txnList;
+  }
+
+  Future<List<FaqModel>> getAllFaqs() async {
+    List<FaqModel> faqList = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await _db.collection(faqCollection).get();
+
+    faqList =
+        querySnapshot.docs.map((faq) => FaqModel.fromMap(faq.data())).toList();
+
+    return faqList;
   }
 }

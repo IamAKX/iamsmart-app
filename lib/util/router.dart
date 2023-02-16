@@ -6,6 +6,7 @@ import 'package:iamsmart/screen/ai_sets/ai_set_details.dart';
 import 'package:iamsmart/screen/ai_sets/ai_set_screen.dart';
 import 'package:iamsmart/screen/depositToUserWallet/deposit_to_user_wallet_screen.dart';
 import 'package:iamsmart/screen/explore/explore_detail_screen.dart';
+import 'package:iamsmart/screen/faq/faq_screen.dart';
 import 'package:iamsmart/screen/forgotPassword/forgot_password_screen.dart';
 import 'package:iamsmart/screen/login/login_screen.dart';
 import 'package:iamsmart/screen/mainContainer/main_container.dart';
@@ -108,6 +109,12 @@ final GoRouter router = GoRouter(
       path: WithdrawFromUserWalletScreen.transferFromUserWalletRoute,
       builder: (BuildContext context, GoRouterState state) {
         return const WithdrawFromUserWalletScreen();
+      },
+    ),
+    GoRoute(
+      path: FaqScreen.faqRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return const FaqScreen();
       },
     ),
   ],
