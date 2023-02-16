@@ -13,6 +13,7 @@ import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen
 import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
+import 'package:iamsmart/util/email_generator.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/widget/heading.dart';

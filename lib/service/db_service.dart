@@ -12,6 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../model/transaction_activity_model.dart';
 import '../util/constants.dart';
+import '../util/email_generator.dart';
+import '../util/utilities.dart';
 
 class DBService {
   static DBService instance = DBService();
@@ -93,10 +95,11 @@ class DBService {
     });
   }
 
-  Future<void> addTransaction(TransactionModel txn) async {
+  Future<String> addTransaction(TransactionModel txn) async {
     var ref = _db.collection(txnCollection).doc();
     txn.id = ref.id;
     await ref.set(txn.toMap());
+    return txn.id!;
   }
 
   Future<List<TransactionModel>> getAllTransactions(String userId) async {
@@ -166,6 +169,7 @@ class DBService {
     );
 
     await addTransaction(txn);
+    await Utilities.sendEmail(EmailGenerator().setCloseRequest(set));
 
     await _db
         .collection(setCollection)

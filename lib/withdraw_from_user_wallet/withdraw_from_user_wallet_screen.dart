@@ -12,8 +12,10 @@ import '../model/user_profile.dart';
 import '../service/db_service.dart';
 import '../service/snakbar_service.dart';
 import '../util/constants.dart';
+import '../util/email_generator.dart';
 import '../util/preference_key.dart';
 import '../util/theme.dart';
+import '../util/utilities.dart';
 import '../widget/button_active.dart';
 import '../widget/custom_textfield.dart';
 import '../widget/heading.dart';
@@ -164,7 +166,17 @@ class _WithdrawFromUserWalletScreenState
                           transactionScreenshot: '',
                           createdAt: DateTime.now());
 
-                      DBService.instance.addTransaction(txn).then((value) {
+                      DBService.instance
+                          .addTransaction(txn)
+                          .then((value) async {
+                        await Utilities.sendEmail(
+                          EmailGenerator().withdrawFromUserWalletRequest(
+                            userProfile,
+                            currencyFormatter.format(txn.amount),
+                            value.toString(),
+                          ),
+                        );
+                        // ignore: use_build_context_synchronously
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.success,

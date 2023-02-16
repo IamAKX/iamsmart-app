@@ -75,7 +75,7 @@ class _RewardScreenState extends State<RewardScreen> {
         appBar: AppBar(
           title: const Heading(title: 'Reward'),
           actions: [
-            IconButton(
+            TextButton.icon(
               onPressed: () async {
                 await FlutterShare.share(
                   title: 'Invitation to join IamSMART',
@@ -90,6 +90,11 @@ class _RewardScreenState extends State<RewardScreen> {
                 Icons.share_outlined,
                 color: bottomNavbarActiveColor,
                 size: 20,
+              ),
+              label: Text(
+                userProfile.inviteCode!,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: textColorDark, fontWeight: FontWeight.bold),
               ),
             ),
           ],

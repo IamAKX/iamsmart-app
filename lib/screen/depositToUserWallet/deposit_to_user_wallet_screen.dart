@@ -15,8 +15,10 @@ import 'package:iamsmart/service/snakbar_service.dart';
 import 'package:iamsmart/service/storage_service.dart';
 import 'package:iamsmart/util/colors.dart';
 import 'package:iamsmart/util/constants.dart';
+import 'package:iamsmart/util/email_generator.dart';
 import 'package:iamsmart/util/preference_key.dart';
 import 'package:iamsmart/util/theme.dart';
+import 'package:iamsmart/util/utilities.dart';
 import 'package:iamsmart/widget/custom_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
@@ -237,7 +239,8 @@ class _DepositeToUserWalletScreenState
                               status: PaymentStatus.pending.name,
                               transactionActivity: [
                                 TransactionActivityModel(
-                                  comment: 'Depost to user wallet | $rupeeSymbol ${_amountCtrl.text}',
+                                  comment:
+                                      'Depost to user wallet | $rupeeSymbol ${_amountCtrl.text}',
                                   createdAt: DateTime.now(),
                                 )
                               ],
@@ -248,7 +251,14 @@ class _DepositeToUserWalletScreenState
 
                           await DBService.instance
                               .addTransaction(txn)
-                              .then((value) {
+                              .then((value) async {
+                            await Utilities.sendEmail(
+                              EmailGenerator().depositToUserWalletRequest(
+                                userProfile,
+                                currencyFormatter.format(txn.amount),
+                                value.toString(),
+                              ),
+                            );
                             setState(() {
                               isPostingTransaction = false;
                             });

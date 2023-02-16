@@ -11,8 +11,10 @@ import '../../main.dart';
 import '../../model/transaction_activity_model.dart';
 import '../../model/transaction_model.dart';
 import '../../service/snakbar_service.dart';
+import '../../util/email_generator.dart';
 import '../../util/preference_key.dart';
 import '../../util/theme.dart';
+import '../../util/utilities.dart';
 import '../../widget/button_active.dart';
 import '../../widget/custom_textfield.dart';
 import '../../widget/heading.dart';
@@ -110,7 +112,8 @@ class _TransferToAIWalletScreenState extends State<TransferToAIWalletScreen> {
                           status: PaymentStatus.pending.name,
                           transactionActivity: [
                             TransactionActivityModel(
-                              comment: 'Transfer to AI  | $rupeeSymbol ${_amountCtrl.text}',
+                              comment:
+                                  'Transfer to AI  | $rupeeSymbol ${_amountCtrl.text}',
                               createdAt: DateTime.now(),
                             )
                           ],
@@ -119,7 +122,18 @@ class _TransferToAIWalletScreenState extends State<TransferToAIWalletScreen> {
                           transactionScreenshot: '',
                           createdAt: DateTime.now());
 
-                      DBService.instance.addTransaction(txn).then((value) {
+                      DBService.instance
+                          .addTransaction(txn)
+                          .then((value) async {
+                        await Utilities.sendEmail(
+                          EmailGenerator()
+                              .transferFromUserWalletToAIWalletRequest(
+                            userProfile,
+                            currencyFormatter.format(txn.amount),
+                            value.toString(),
+                          ),
+                        );
+                        // ignore: use_build_context_synchronously
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.success,

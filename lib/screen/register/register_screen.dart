@@ -30,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
+
     _auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: getBody(),
@@ -98,7 +99,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   if (_auth.status != AuthStatus.authenticating) {
                     _auth
                         .registerUserWithEmailAndPassword(
-                            _nameCtrl.text, _emailCtrl.text, _passwordCtrl.text,_refCodeCtrl.text)
+                            _nameCtrl.text,
+                            _emailCtrl.text,
+                            _passwordCtrl.text,
+                            _refCodeCtrl.text)
                         .then((value) {
                       if (value) {
                         context.go(LoginScreen.loginRoute);

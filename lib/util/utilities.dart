@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:iamsmart/util/constants.dart';
 import 'package:intl/intl.dart';
 
 import '../main.dart';
+import '../model/email_model.dart';
 import '../model/transaction_activity_model.dart';
 import '../model/user_profile.dart';
 import '../service/db_service.dart';
@@ -117,6 +119,33 @@ class Utilities {
         onDismissCallback: (type) {},
         btnOkText: 'Okay',
       ).show();
+      return false;
+    }
+  }
+
+  static Future<bool> sendEmail(EmailModel emailBody) async {
+    Dio dio = Dio();
+    String api =
+        'https://us-central1-iamsmart-d3a89.cloudfunctions.net/userFunction/v1/admin/sendEmail';
+    var data = {
+      "from": emailBody.from,
+      "to": emailBody.to,
+      "subject": emailBody.subject,
+      "text": emailBody.text,
+    };
+    Response response = await dio.post(
+      api,
+      data: data,
+      options: Options(
+        contentType: 'application/json',
+        responseType: ResponseType.json,
+      ),
+    );
+    debugPrint(emailBody.toString());
+    if (response.statusCode == 200) {
+      debugPrint(response.data.toString());
+      return true;
+    } else {
       return false;
     }
   }
