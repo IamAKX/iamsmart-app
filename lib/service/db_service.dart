@@ -223,8 +223,10 @@ class DBService {
 
   Future<List<FaqModel>> getAllFaqs() async {
     List<FaqModel> faqList = [];
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await _db.collection(faqCollection).get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(faqCollection)
+        .orderBy('faqNo', descending: false)
+        .get();
 
     faqList =
         querySnapshot.docs.map((faq) => FaqModel.fromMap(faq.data())).toList();

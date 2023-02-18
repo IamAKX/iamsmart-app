@@ -123,7 +123,7 @@ class _AssetsScreenState extends State<AssetsScreen>
           IconButton(
             onPressed: () {},
             icon: const Icon(
-              FontAwesomeIcons.bell,
+              Icons.support_agent_outlined,
               color: bottomNavbarActiveColor,
               size: 20,
             ),

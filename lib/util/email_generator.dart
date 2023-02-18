@@ -55,6 +55,7 @@ class EmailGenerator {
           'Dear ${user.name},\nGreetings !\n\nYour Deposit request from User wallet to AI wallet for an amount of  $rupeeSymbol $amount/- has  been received . Amount will be reflected in your AI wallet within 6 working hours.\n\nRegards, \nTeam IamSmart .',
     );
   }
+
 //done
   EmailModel setCreateRequest(SetModel set) {
     return EmailModel(
@@ -66,7 +67,6 @@ class EmailGenerator {
     );
   }
 
-
   EmailModel setCloseRequest(SetModel set) {
     return EmailModel(
       from: fromEmail,
@@ -77,6 +77,7 @@ class EmailGenerator {
           'Dear ${set.userProfile!.name},\nGreetings !\n\nYour request for the Closure of Set #${set.setNumber} has been received . The Set will be closed and the respective amount will be \nDeposited in your User wallet within 48 working hours. \n\nRegards ,\nTeam IamSmart .',
     );
   }
+
 //done
   EmailModel setCloseConfirmation(SetModel set) {
     return EmailModel(
@@ -88,6 +89,7 @@ class EmailGenerator {
           'Dear ${set.userProfile!.name},\nGreetings !\n\nYour request for the Closure of Set #${set.setNumber} has been received . The Set has been closed and the respective amount is \nDeposited in your User wallet.\nTransaction ID : ${set.id} \n\nRegards ,\nTeam IamSmart .',
     );
   }
+
 // done
   EmailModel withdrawFromUserWalletRequest(
       UserProfile user, String amount, String txnId) {

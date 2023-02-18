@@ -373,147 +373,147 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
           height: defaultPadding,
         ),
         // DL
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-          child: Text('Driving Lisence Number'),
-        ),
-        CustomTextField(
-          hint: 'Driving Lisence Number',
-          controller: _kycDLNumber,
-          keyboardType: TextInputType.name,
-          obscure: false,
-          icon: FontAwesomeIcons.userShield,
-          enabled: !(userProfile?.isKycDone ?? false),
-        ),
-        const Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: defaultPadding,
-              right: defaultPadding,
-              // top: defaultPadding,
-              bottom: defaultPadding / 2,
-            ),
-            child: Text(
-              'Please attched the DL Document image',
-            ),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              height: 100,
-              width: 150,
-              child: userProfile?.isKycDone ?? false
-                  ? getLoadedImage(userProfile?.dlDocumentImageFront)
-                  : !isDLImageSelectedFront
-                      ? InkWell(
-                          child: Image.asset(
-                            'assets/image/add-image.png',
-                          ),
-                          onTap: () async {
-                            final ImagePicker picker = ImagePicker();
-                            final XFile? image = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            if (image != null) {
-                              imageDLFileFront = File(image.path);
+        // const Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+        //   child: Text('Driving Lisence Number'),
+        // ),
+        // CustomTextField(
+        //   hint: 'Driving Lisence Number',
+        //   controller: _kycDLNumber,
+        //   keyboardType: TextInputType.name,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.userShield,
+        //   enabled: !(userProfile?.isKycDone ?? false),
+        // ),
+        // const Align(
+        //   alignment: Alignment.center,
+        //   child: Padding(
+        //     padding: EdgeInsets.only(
+        //       left: defaultPadding,
+        //       right: defaultPadding,
+        //       // top: defaultPadding,
+        //       bottom: defaultPadding / 2,
+        //     ),
+        //     child: Text(
+        //       'Please attched the DL Document image',
+        //     ),
+        //   ),
+        // ),
+        // Row(
+        //   mainAxisSize: MainAxisSize.max,
+        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //   children: [
+        //     SizedBox(
+        //       height: 100,
+        //       width: 150,
+        //       child: userProfile?.isKycDone ?? false
+        //           ? getLoadedImage(userProfile?.dlDocumentImageFront)
+        //           : !isDLImageSelectedFront
+        //               ? InkWell(
+        //                   child: Image.asset(
+        //                     'assets/image/add-image.png',
+        //                   ),
+        //                   onTap: () async {
+        //                     final ImagePicker picker = ImagePicker();
+        //                     final XFile? image = await picker.pickImage(
+        //                         source: ImageSource.gallery);
+        //                     if (image != null) {
+        //                       imageDLFileFront = File(image.path);
 
-                              setState(() {
-                                isDLImageSelectedFront = true;
-                              });
-                            }
-                          },
-                        )
-                      : SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: Stack(
-                            children: [
-                              Image.file(
-                                imageDLFileFront!,
-                                height: 100,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                right: 1,
-                                top: 1,
-                                child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        imageDLFileFront = null;
-                                        isDLImageSelectedFront = false;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      FontAwesomeIcons.trash,
-                                      color: Colors.red,
-                                    )),
-                              )
-                            ],
-                          ),
-                        ),
-            ),
-            SizedBox(
-              height: 100,
-              width: 150,
-              child: userProfile?.isKycDone ?? false
-                  ? getLoadedImage(userProfile?.dlDocumentImageBack)
-                  : !isDLImageSelectedBack
-                      ? InkWell(
-                          child: Image.asset(
-                            'assets/image/add-image.png',
-                          ),
-                          onTap: () async {
-                            final ImagePicker picker = ImagePicker();
-                            final XFile? image = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            if (image != null) {
-                              imageDLFileBack = File(image.path);
-                              setState(() {
-                                isDLImageSelectedBack = true;
-                              });
-                            }
-                          },
-                        )
-                      : SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: Stack(
-                            children: [
-                              Image.file(
-                                imageDLFileBack!,
-                                height: 100,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                right: 1,
-                                top: 1,
-                                child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        imageDLFileBack = null;
-                                        isDLImageSelectedBack = false;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      FontAwesomeIcons.trash,
-                                      color: Colors.red,
-                                    )),
-                              )
-                            ],
-                          ),
-                        ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: defaultPadding / 2,
-        ),
-        imageLableRow(),
+        //                       setState(() {
+        //                         isDLImageSelectedFront = true;
+        //                       });
+        //                     }
+        //                   },
+        //                 )
+        //               : SizedBox(
+        //                   height: 100,
+        //                   width: 150,
+        //                   child: Stack(
+        //                     children: [
+        //                       Image.file(
+        //                         imageDLFileFront!,
+        //                         height: 100,
+        //                         width: 150,
+        //                         fit: BoxFit.cover,
+        //                       ),
+        //                       Positioned(
+        //                         right: 1,
+        //                         top: 1,
+        //                         child: IconButton(
+        //                             onPressed: () {
+        //                               setState(() {
+        //                                 imageDLFileFront = null;
+        //                                 isDLImageSelectedFront = false;
+        //                               });
+        //                             },
+        //                             icon: const Icon(
+        //                               FontAwesomeIcons.trash,
+        //                               color: Colors.red,
+        //                             )),
+        //                       )
+        //                     ],
+        //                   ),
+        //                 ),
+        //     ),
+        //     SizedBox(
+        //       height: 100,
+        //       width: 150,
+        //       child: userProfile?.isKycDone ?? false
+        //           ? getLoadedImage(userProfile?.dlDocumentImageBack)
+        //           : !isDLImageSelectedBack
+        //               ? InkWell(
+        //                   child: Image.asset(
+        //                     'assets/image/add-image.png',
+        //                   ),
+        //                   onTap: () async {
+        //                     final ImagePicker picker = ImagePicker();
+        //                     final XFile? image = await picker.pickImage(
+        //                         source: ImageSource.gallery);
+        //                     if (image != null) {
+        //                       imageDLFileBack = File(image.path);
+        //                       setState(() {
+        //                         isDLImageSelectedBack = true;
+        //                       });
+        //                     }
+        //                   },
+        //                 )
+        //               : SizedBox(
+        //                   height: 100,
+        //                   width: 150,
+        //                   child: Stack(
+        //                     children: [
+        //                       Image.file(
+        //                         imageDLFileBack!,
+        //                         height: 100,
+        //                         width: 150,
+        //                         fit: BoxFit.cover,
+        //                       ),
+        //                       Positioned(
+        //                         right: 1,
+        //                         top: 1,
+        //                         child: IconButton(
+        //                             onPressed: () {
+        //                               setState(() {
+        //                                 imageDLFileBack = null;
+        //                                 isDLImageSelectedBack = false;
+        //                               });
+        //                             },
+        //                             icon: const Icon(
+        //                               FontAwesomeIcons.trash,
+        //                               color: Colors.red,
+        //                             )),
+        //                       )
+        //                     ],
+        //                   ),
+        //                 ),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(
+        //   height: defaultPadding / 2,
+        // ),
+        // imageLableRow(),
         const SizedBox(
           height: defaultPadding,
         ),

@@ -101,7 +101,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           icon: FontAwesomeIcons.solidUser,
         ),
         CustomTextField(
-          hint: 'Phone Number',
+          hint: 'Mobile Number',
           controller: _phoneCtrl,
           keyboardType: TextInputType.phone,
           obscure: false,
@@ -110,46 +110,46 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         const SizedBox(
           height: defaultPadding,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-          child: Text(
-            'Residential Address',
-            style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                  color: textColorLight,
-                ),
-          ),
-        ),
-        CustomTextField(
-          hint: 'Street1, Street2',
-          controller: _rAddress1,
-          keyboardType: TextInputType.streetAddress,
-          obscure: false,
-          icon: FontAwesomeIcons.home,
-        ),
-        CustomTextField(
-          hint: 'Area, Locality, District',
-          controller: _rAddress2,
-          keyboardType: TextInputType.streetAddress,
-          obscure: false,
-          icon: FontAwesomeIcons.home,
-        ),
-        CustomTextField(
-          hint: 'State',
-          controller: _rAddress3,
-          keyboardType: TextInputType.streetAddress,
-          obscure: false,
-          icon: FontAwesomeIcons.home,
-        ),
-        CustomTextField(
-          hint: 'Pincode',
-          controller: _rAddress4,
-          keyboardType: TextInputType.streetAddress,
-          obscure: false,
-          icon: FontAwesomeIcons.home,
-        ),
-        const SizedBox(
-          height: defaultPadding,
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+        //   child: Text(
+        //     'Residential Address',
+        //     style: Theme.of(context).textTheme.subtitle2?.copyWith(
+        //           color: textColorLight,
+        //         ),
+        //   ),
+        // ),
+        // CustomTextField(
+        //   hint: 'Street1, Street2',
+        //   controller: _rAddress1,
+        //   keyboardType: TextInputType.streetAddress,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.home,
+        // ),
+        // CustomTextField(
+        //   hint: 'Area, Locality, District',
+        //   controller: _rAddress2,
+        //   keyboardType: TextInputType.streetAddress,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.home,
+        // ),
+        // CustomTextField(
+        //   hint: 'State',
+        //   controller: _rAddress3,
+        //   keyboardType: TextInputType.streetAddress,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.home,
+        // ),
+        // CustomTextField(
+        //   hint: 'Pincode',
+        //   controller: _rAddress4,
+        //   keyboardType: TextInputType.streetAddress,
+        //   obscure: false,
+        //   icon: FontAwesomeIcons.home,
+        // ),
+        // const SizedBox(
+        //   height: defaultPadding,
+        // ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Text(
