@@ -59,6 +59,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     _bankAccountNameCtrl.text = userProfile.bankAccountName ?? '';
     _bankAccountNumberCtrl.text = userProfile.bankAccountNumber ?? '';
     _bankBranchNameCtrl.text = userProfile.bankBranchCode ?? '';
+    _phoneCtrl.text = userProfile.phone ?? '';
     _bankIFSCCtrl.text = userProfile.bankIFSCCode ?? '';
     _rAddress1.text = userProfile.residencialAddress1 ?? '';
     _rAddress2.text = userProfile.residencialAddress2 ?? '';

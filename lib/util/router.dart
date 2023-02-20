@@ -14,6 +14,9 @@ import 'package:iamsmart/screen/register/register_screen.dart';
 import 'package:iamsmart/screen/setting/change_password.dart';
 import 'package:iamsmart/screen/setting/kyc_document_screen.dart';
 import 'package:iamsmart/screen/setting/profile_details_screen.dart';
+import 'package:iamsmart/screen/ticket/ticket_create.dart';
+import 'package:iamsmart/screen/ticket/ticket_detail.dart';
+import 'package:iamsmart/screen/ticket/ticket_screen.dart';
 import 'package:iamsmart/screen/transaction/transaction_detail_screen.dart';
 import 'package:iamsmart/screen/transferToAIWallet/transafer_to_ai_wallet_screen.dart';
 import 'package:iamsmart/util/preference_key.dart';
@@ -115,6 +118,26 @@ final GoRouter router = GoRouter(
       path: FaqScreen.faqRoute,
       builder: (BuildContext context, GoRouterState state) {
         return const FaqScreen();
+      },
+    ),
+    GoRoute(
+      path: TicketScreen.ticketScreenRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return const TicketScreen();
+      },
+    ),
+    GoRoute(
+      path: TicketCreateScreen.ticketCreateScreenRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return const TicketCreateScreen();
+      },
+    ),
+    GoRoute(
+      path: TicketDetailScreen.ticketDetailScreenRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return TicketDetailScreen(
+          ticketId: state.params['ticketId'] ?? '',
+        );
       },
     ),
   ],

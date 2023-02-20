@@ -37,11 +37,13 @@ Color getStatusColor(String status) {
   switch (status) {
     case 'approved':
     case 'complete':
+    case 'open':
       return Colors.green;
     case 'pending':
     case 'partial':
       return Colors.orange;
     case 'rejected':
+    case 'closed':
       return Colors.red;
     case 'transfered':
     case 'running':

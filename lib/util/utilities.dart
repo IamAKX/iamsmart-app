@@ -42,11 +42,19 @@ class Utilities {
   }
 
   static String formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy, hh:mm a').format(date);
+    try {
+      return DateFormat('dd MMM yyyy, hh:mm a').format(date);
+    } catch (e) {
+      return '-';
+    }
   }
 
   static String formatDateShort(DateTime date) {
-    return DateFormat('dd MMM').format(date);
+    try {
+      return DateFormat('dd MMM').format(date);
+    } catch (e) {
+      return '-';
+    }
   }
 
   static String generateInviteCode() {

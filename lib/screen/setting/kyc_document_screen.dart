@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -82,6 +83,16 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
   getBody() {
     return ListView(
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: defaultPadding,
+            vertical: defaultPadding / 2,
+          ),
+          child: Text(
+            'Please choose png or jpeg type image only',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Text('Aadhaar Number'),
@@ -310,68 +321,74 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
                           ),
                         ),
             ),
-            SizedBox(
-              height: 100,
-              width: 150,
-              child: userProfile?.isKycDone ?? false
-                  ? getLoadedImage(userProfile?.panDocumentImageBack)
-                  : !isPanImageSelectedBack
-                      ? InkWell(
-                          child: Image.asset(
-                            'assets/image/add-image.png',
-                          ),
-                          onTap: () async {
-                            final ImagePicker picker = ImagePicker();
-                            final XFile? image = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            if (image != null) {
-                              imagePanFileBack = File(image.path);
-                              setState(() {
-                                isPanImageSelectedBack = true;
-                              });
-                            }
-                          },
-                        )
-                      : SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: Stack(
-                            children: [
-                              Image.file(
-                                imagePanFileBack!,
-                                height: 100,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                right: 1,
-                                top: 1,
-                                child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      imagePanFileBack = null;
-                                      isPanImageSelectedBack = false;
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    FontAwesomeIcons.trash,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-            ),
+            // SizedBox(
+            //   height: 100,
+            //   width: 150,
+            //   child: userProfile?.isKycDone ?? false
+            //       ? getLoadedImage(userProfile?.panDocumentImageBack)
+            //       : !isPanImageSelectedBack
+            //           ? InkWell(
+            //               child: Image.asset(
+            //                 'assets/image/add-image.png',
+            //               ),
+            //               onTap: () async {
+            //                 final ImagePicker picker = ImagePicker();
+            //                 final XFile? image = await picker.pickImage(
+            //                     source: ImageSource.gallery);
+            //                 if (image != null) {
+            //                   imagePanFileBack = File(image.path);
+            //                   setState(() {
+            //                     isPanImageSelectedBack = true;
+            //                   });
+            //                 }
+            //               },
+            //             )
+            //           : SizedBox(
+            //               height: 100,
+            //               width: 150,
+            //               child: Stack(
+            //                 children: [
+            //                   Image.file(
+            //                     imagePanFileBack!,
+            //                     height: 100,
+            //                     width: 150,
+            //                     fit: BoxFit.cover,
+            //                   ),
+            //                   Positioned(
+            //                     right: 1,
+            //                     top: 1,
+            //                     child: IconButton(
+            //                       onPressed: () {
+            //                         setState(() {
+            //                           imagePanFileBack = null;
+            //                           isPanImageSelectedBack = false;
+            //                         });
+            //                       },
+            //                       icon: const Icon(
+            //                         FontAwesomeIcons.trash,
+            //                         color: Colors.red,
+            //                       ),
+            //                     ),
+            //                   )
+            //                 ],
+            //               ),
+            //             ),
+            // ),
           ],
         ),
         const SizedBox(
           height: defaultPadding / 2,
         ),
-        imageLableRow(),
-        const SizedBox(
-          height: defaultPadding,
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: const [
+            Text(
+              'Front Side',
+            ),
+          ],
         ),
+
         // DL
         // const Padding(
         //   padding: EdgeInsets.symmetric(horizontal: defaultPadding),
@@ -514,9 +531,7 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
         //   height: defaultPadding / 2,
         // ),
         // imageLableRow(),
-        const SizedBox(
-          height: defaultPadding,
-        ),
+
         Visibility(
           visible: !(userProfile?.isKycDone ?? false),
           child: ActiveButton(
@@ -525,7 +540,6 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
                   imageAadhaarFileBack == null ||
                   imageAadhaarFileFront == null ||
                   _kycPanNumber.text.isEmpty ||
-                  imagePanFileBack == null ||
                   imagePanFileFront == null) {
                 SnackBarService.instance
                     .showSnackBarError('Aadhaar and PAN fields are mandatory');
@@ -534,11 +548,22 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
               setState(() {
                 isSaving = true;
               });
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.info,
+                animType: AnimType.bottomSlide,
+                title: 'Please wait...',
+                autoDismiss: false,
+                customHeader: const Center(child: CircularProgressIndicator()),
+                desc:
+                    'Uploading document, please do not press back button or close the app',
+                onDismissCallback: (type) {},
+              ).show();
               await StorageService.uploadKycDocuments(
                       imageAadhaarFileFront!,
                       imageAadhaarFileBack!,
                       imagePanFileFront!,
-                      imagePanFileBack!,
+                      imagePanFileBack,
                       imageDLFileFront,
                       imageDLFileBack)
                   .then((map) async {
@@ -570,7 +595,7 @@ class _KycDocumentScreenState extends State<KycDocumentScreen> {
                 loadProfile();
               });
             },
-            label: 'Update',
+            label: isSaving ? 'Uploading...' : 'Update',
             isDisabled: isSaving,
           ),
         )

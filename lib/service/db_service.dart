@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/main.dart';
 import 'package:iamsmart/model/set_model.dart';
+import 'package:iamsmart/model/ticket_model.dart';
 import 'package:iamsmart/model/transaction_model.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/util/preference_key.dart';
@@ -23,6 +24,7 @@ class DBService {
   String txnCollection = 'transactions';
   String setCollection = 'sets';
   String faqCollection = 'faq';
+  String ticketCollection = 'tickets';
 
   DBService() {
     _db = FirebaseFirestore.instance;
@@ -90,6 +92,8 @@ class DBService {
         desc: 'Your profile data is updated',
         btnOkOnPress: () {
           context.pop();
+          context.pop();
+          FocusManager.instance.primaryFocus?.unfocus();
         },
         onDismissCallback: (type) {},
         btnOkText: 'Okay',
@@ -232,5 +236,42 @@ class DBService {
         querySnapshot.docs.map((faq) => FaqModel.fromMap(faq.data())).toList();
 
     return faqList;
+  }
+
+  Future<String> createTicket(TicketModel ticket) async {
+    var ref = _db.collection(ticketCollection).doc();
+    ticket.id = ref.id;
+    await ref.set(ticket.toMap());
+    return ticket.id!;
+  }
+
+  Future<List<TicketModel>> getAllTicketsById(String userId) async {
+    List<TicketModel> list = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+        .collection(ticketCollection)
+        .where('user.id', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    list = querySnapshot.docs
+        .map((txn) => TicketModel.fromMap(txn.data()))
+        .toList();
+    return list;
+  }
+
+  Future<TicketModel> getTicketById(String id) async {
+    TicketModel ticketModel = TicketModel();
+    await _db.collection(ticketCollection).doc(id).get().then((value) {
+      ticketModel = TicketModel.fromMap(value.data() ?? {});
+    });
+
+    return ticketModel;
+  }
+
+  Future<void> updateTicket(TicketModel ticket) async {
+    await _db
+        .collection(ticketCollection)
+        .doc(ticket.id)
+        .update(ticket.toMap());
   }
 }

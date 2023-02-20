@@ -21,7 +21,7 @@ class StorageService {
     File aadhaarFront,
     File aadhaarBack,
     File panfileFront,
-    File panfileBack,
+    File? panfileBack,
     File? dlfileFront,
     File? dlfileBack,
   ) async {
@@ -60,12 +60,14 @@ class StorageService {
     downloadLink = await snapshot.ref.getDownloadURL();
     linkMap['panfileFront'] = downloadLink;
 
-    path = 'kycDocument/${profile.email}/pan_back';
-    ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(panfileBack);
-    snapshot = await uploadTask.whenComplete(() {});
-    downloadLink = await snapshot.ref.getDownloadURL();
-    linkMap['panfileBack'] = downloadLink;
+    if (panfileBack != null) {
+      path = 'kycDocument/${profile.email}/pan_back';
+      ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(panfileBack);
+      snapshot = await uploadTask.whenComplete(() {});
+      downloadLink = await snapshot.ref.getDownloadURL();
+      linkMap['panfileBack'] = downloadLink;
+    }
 
     if (dlfileFront != null && dlfileBack != null) {
       path = 'kycDocument/${profile.email}/dl_front';
