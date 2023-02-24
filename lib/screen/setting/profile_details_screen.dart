@@ -201,7 +201,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           ),
         ),
         CustomTextField(
-          hint: 'Bank Name',
+          hint: 'Account Holder\'s Name',
           controller: _bankAccountNameCtrl,
           keyboardType: TextInputType.name,
           obscure: false,

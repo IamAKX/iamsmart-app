@@ -121,26 +121,28 @@ class _AssetsScreenState extends State<AssetsScreen>
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.push(TicketScreen.ticketScreenRoute);
-            },
-            icon: const Icon(
-              Icons.support_agent_outlined,
-              color: bottomNavbarActiveColor,
-              size: 20,
+          if (userProfile.isKycDone ?? false)
+            IconButton(
+              onPressed: () {
+                context.push(TicketScreen.ticketScreenRoute);
+              },
+              icon: const Icon(
+                Icons.support_agent_outlined,
+                color: bottomNavbarActiveColor,
+                size: 20,
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              context.push(FaqScreen.faqRoute);
-            },
-            icon: const Icon(
-              FontAwesomeIcons.circleQuestion,
-              color: bottomNavbarActiveColor,
-              size: 20,
+          if (userProfile.isKycDone ?? false)
+            IconButton(
+              onPressed: () {
+                context.push(FaqScreen.faqRoute);
+              },
+              icon: const Icon(
+                FontAwesomeIcons.circleQuestion,
+                color: bottomNavbarActiveColor,
+                size: 20,
+              ),
             ),
-          ),
           IconButton(
             onPressed: () async {
               loadUserProfile();
