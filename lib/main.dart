@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:iamsmart/model/user_profile.dart';
 import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/util/preference_key.dart';
@@ -13,12 +15,16 @@ import 'firebase_options.dart';
 import 'service/auth_provider.dart';
 
 late SharedPreferences prefs;
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await setupFirebaseMessaging();
+
   if (prefs.containsKey(PreferenceKey.user)) {
     UserProfile userProfile =
         UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
@@ -49,4 +55,61 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> setupFirebaseMessaging() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  messaging.getToken().then((value) {
+    prefs.setString(PreferenceKey.fcmToken, value ?? '');
+  });
+
+  var initializationSettingsAndroid =
+      const AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      publishNotification(
+          message.notification?.title ?? '', message.notification?.body ?? '');
+    }
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  publishNotification(
+      message.notification?.title ?? '', message.notification?.body ?? '');
+}
+
+Future<void> publishNotification(String title, String body) async {
+  var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'channel_ID_iamsmart', 'channel name',
+      channelDescription: 'channel description',
+      importance: Importance.max,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('ringtone'),
+      showProgress: true,
+      priority: Priority.high,
+      ticker: 'test ticker');
+
+  var iOSChannelSpecifics = const DarwinNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics, iOS: iOSChannelSpecifics);
+  await flutterLocalNotificationsPlugin
+      .show(0, title, body, platformChannelSpecifics, payload: 'test');
 }

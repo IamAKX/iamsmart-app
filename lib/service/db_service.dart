@@ -48,6 +48,7 @@ class DBService {
           desiredAccuracy: LocationAccuracy.high);
       map['latitude'] = position.latitude;
       map['longitude'] = position.longitude;
+      map['fcmToken'] = prefs.getString(PreferenceKey.fcmToken);
     }
     await _db.collection(userCollection).doc(userId).update(map);
   }

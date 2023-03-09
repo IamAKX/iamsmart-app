@@ -44,6 +44,7 @@ class UserProfile {
   String? communicationAddress3;
   String? communicationAddress4;
   String? referredByUserId;
+  String? fcmToken;
   UserProfile({
     this.id,
     this.name,
@@ -85,6 +86,7 @@ class UserProfile {
     this.communicationAddress3,
     this.communicationAddress4,
     this.referredByUserId,
+    this.fcmToken,
   });
 
   UserProfile copyWith({
@@ -128,6 +130,7 @@ class UserProfile {
     String? communicationAddress3,
     String? communicationAddress4,
     String? referredByUserId,
+    String? fcmToken,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -177,6 +180,7 @@ class UserProfile {
       communicationAddress4:
           communicationAddress4 ?? this.communicationAddress4,
       referredByUserId: referredByUserId ?? this.referredByUserId,
+      fcmToken: fcmToken ?? this.fcmToken,
     );
   }
 
@@ -222,6 +226,7 @@ class UserProfile {
       'communicationAddress3': communicationAddress3,
       'communicationAddress4': communicationAddress4,
       'referredByUserId': referredByUserId,
+      'fcmToken': fcmToken,
     };
   }
 
@@ -271,6 +276,7 @@ class UserProfile {
       communicationAddress3: map['communicationAddress3'],
       communicationAddress4: map['communicationAddress4'],
       referredByUserId: map['referredByUserId'],
+      fcmToken: map['fcmToken'],
     );
   }
 
@@ -281,7 +287,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, aadhaarId: $aadhaarId, aadhaarDocumentImageFront: $aadhaarDocumentImageFront, aadhaarDocumentImageBack: $aadhaarDocumentImageBack, panId: $panId, panDocumentImageFront: $panDocumentImageFront, panDocumentImageBack: $panDocumentImageBack, dlId: $dlId, dlDocumentImageFront: $dlDocumentImageFront, dlDocumentImageBack: $dlDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode, phone: $phone, residencialAddress1: $residencialAddress1, residencialAddress2: $residencialAddress2, residencialAddress3: $residencialAddress3, residencialAddress4: $residencialAddress4, communicationAddress1: $communicationAddress1, communicationAddress2: $communicationAddress2, communicationAddress3: $communicationAddress3, communicationAddress4: $communicationAddress4, referredByUserId: $referredByUserId)';
+    return 'UserProfile(id: $id, name: $name, email: $email, profileImage: $profileImage, aadhaarId: $aadhaarId, aadhaarDocumentImageFront: $aadhaarDocumentImageFront, aadhaarDocumentImageBack: $aadhaarDocumentImageBack, panId: $panId, panDocumentImageFront: $panDocumentImageFront, panDocumentImageBack: $panDocumentImageBack, dlId: $dlId, dlDocumentImageFront: $dlDocumentImageFront, dlDocumentImageBack: $dlDocumentImageBack, bankAccountName: $bankAccountName, bankIFSCCode: $bankIFSCCode, bankAccountNumber: $bankAccountNumber, bankBranchCode: $bankBranchCode, isProfileApproved: $isProfileApproved, isProfileSuspended: $isProfileSuspended, isKycDone: $isKycDone, userWalletBalance: $userWalletBalance, aiWalletBalance: $aiWalletBalance, lastLogin: $lastLogin, createdAt: $createdAt, latitude: $latitude, longitude: $longitude, setCount: $setCount, rewardBalance: $rewardBalance, referalList: $referalList, inviteCode: $inviteCode, phone: $phone, residencialAddress1: $residencialAddress1, residencialAddress2: $residencialAddress2, residencialAddress3: $residencialAddress3, residencialAddress4: $residencialAddress4, communicationAddress1: $communicationAddress1, communicationAddress2: $communicationAddress2, communicationAddress3: $communicationAddress3, communicationAddress4: $communicationAddress4, referredByUserId: $referredByUserId, fcmToken: $fcmToken)';
   }
 
   @override
@@ -328,7 +334,8 @@ class UserProfile {
         other.communicationAddress2 == communicationAddress2 &&
         other.communicationAddress3 == communicationAddress3 &&
         other.communicationAddress4 == communicationAddress4 &&
-        other.referredByUserId == referredByUserId;
+        other.referredByUserId == referredByUserId &&
+        other.fcmToken == fcmToken;
   }
 
   @override
@@ -372,6 +379,7 @@ class UserProfile {
         communicationAddress2.hashCode ^
         communicationAddress3.hashCode ^
         communicationAddress4.hashCode ^
-        referredByUserId.hashCode;
+        referredByUserId.hashCode ^
+        fcmToken.hashCode;
   }
 }
