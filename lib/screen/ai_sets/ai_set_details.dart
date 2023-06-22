@@ -29,7 +29,7 @@ class AiSetDetailScreen extends StatefulWidget {
 class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
   final TextEditingController _amountCtrl = TextEditingController();
   SetModel? set;
-
+  bool isButtonsEnabled = true;
   @override
   void initState() {
     super.initState();
@@ -98,6 +98,9 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
           visible: set!.status == SetStatus.running.name,
           child: ActiveButton(
               onPressed: () {
+                setState(() {
+                  isButtonsEnabled = false;
+                });
                 AwesomeDialog(
                         context: context,
                         dialogType: DialogType.question,
@@ -137,7 +140,8 @@ class _AiSetDetailScreenState extends State<AiSetDetailScreen> {
                         btnCancelText: 'Cancel')
                     .show();
               },
-              label: 'Close set'),
+              label: 'Close set',
+              isDisabled: !isButtonsEnabled),
         ),
       ],
     );

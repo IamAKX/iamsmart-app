@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -252,6 +253,7 @@ class _DepositeToUserWalletScreenState
                           await DBService.instance
                               .addTransaction(txn)
                               .then((value) async {
+                            log('value : $value');
                             await Utilities.sendEmail(
                               EmailGenerator().depositToUserWalletRequest(
                                 userProfile,

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none"
 
-version: 1.0.0+13
+version: 1.0.0+15
 
 environment:
   sdk: ">=2.18.6 <3.0.0"
@@ -30,7 +30,7 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   geolocator: ^9.0.2
   go_router: ^6.0.1
-  google_fonts: ^3.0.1
+  google_fonts: any
   image_picker: ^0.8.6
   intl: any
   local_auth: ^2.1.3
