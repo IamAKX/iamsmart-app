@@ -22,12 +22,12 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
 
-  late AuthProvider _auth;
+  late MyAuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
-    _auth = Provider.of<AuthProvider>(context);
+    _auth = Provider.of<MyAuthProvider>(context);
     return Scaffold(
       body: getBody(),
     );

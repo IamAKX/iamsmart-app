@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_search2/dropdown_search2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -80,17 +79,21 @@ class _DepositeToUserWalletScreenState
                   icon: FontAwesomeIcons.coins),
               Padding(
                 padding: const EdgeInsets.all(defaultPadding),
-                child: DropdownSearch<String>(
-                  mode: Mode.MENU,
-                  dropDownButton: const Icon(
+                child: DropdownButton<String>(
+                  icon: const Icon(
                     FontAwesomeIcons.chevronDown,
                     size: 15,
                     color: textColorLight,
                   ),
-                  showSelectedItems: true,
-                  selectedItem: _selectedPaymentMode,
-                  label: 'Payment Mode',
-                  items: depositePaymentModeList,
+                  // showSelectedItems: true,
+                  // : _selectedPaymentMode,
+                  hint: Text('Payment Mode'),
+                  // items: depositePaymentModeList.map((e) => DropdownMenuItem(child: Text('e'))).toList(),
+                  items: depositePaymentModeList.map((String location) {
+                    return  DropdownMenuItem<String>(
+                      child:  Text(location),
+                    );
+                  }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedPaymentMode = value!;

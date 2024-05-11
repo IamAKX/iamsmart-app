@@ -19,14 +19,14 @@ enum AuthStatus {
   forgotPwdMailSent
 }
 
-class AuthProvider extends ChangeNotifier {
+class MyAuthProvider extends ChangeNotifier {
   User? user;
   AuthStatus? status = AuthStatus.notAuthenticated;
   late FirebaseAuth _auth;
 
-  static AuthProvider instance = AuthProvider();
+  static MyAuthProvider instance = MyAuthProvider();
 
-  AuthProvider() {
+  MyAuthProvider() {
     _auth = FirebaseAuth.instance;
     _checkCurrentUserIsAuthenticated();
   }

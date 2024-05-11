@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
 
-  late AuthProvider _auth;
+  late MyAuthProvider _auth;
   bool showBiometricAuth = false;
 
   checkBiometricAuth() async {
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
 
-    _auth = Provider.of<AuthProvider>(context);
+    _auth = Provider.of<MyAuthProvider>(context);
     return Scaffold(
       body: getBody(),
     );

@@ -25,13 +25,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _refCodeCtrl = TextEditingController();
 
-  late AuthProvider _auth;
+  late MyAuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
 
-    _auth = Provider.of<AuthProvider>(context);
+    _auth = Provider.of<MyAuthProvider>(context);
     return Scaffold(
       body: getBody(),
     );

@@ -23,13 +23,13 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _passwordCtrl = TextEditingController();
   final TextEditingController _cnfpasswordCtrl = TextEditingController();
-  late AuthProvider _auth;
+  late MyAuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
 
-    _auth = Provider.of<AuthProvider>(context);
+    _auth = Provider.of<MyAuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Heading(title: 'New Password'),

@@ -11,6 +11,7 @@ const double settingsPageUserIconSize = 90;
 ThemeData globalTheme(BuildContext context) {
   return ThemeData(
     brightness: Brightness.light,
+    useMaterial3: false,
     scaffoldBackgroundColor: Colors.white,
     backgroundColor: Colors.white,
     dividerColor: dividerColor,

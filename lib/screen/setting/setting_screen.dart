@@ -37,14 +37,14 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   bool isBiometricEnabled =
       prefs.getBool(PreferenceKey.isBiometricEnabled) ?? false;
-  late AuthProvider _auth;
+  late MyAuthProvider _auth;
   late UserProfile userProfile;
   bool isImageUploading = false;
 
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
-    _auth = Provider.of<AuthProvider>(context);
+    _auth = Provider.of<MyAuthProvider>(context);
     if (prefs.containsKey(PreferenceKey.user)) {
       userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
     }

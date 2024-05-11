@@ -1,14 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:dropdown_search2/dropdown_search2.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iamsmart/model/set_model.dart';
 import 'package:iamsmart/service/db_service.dart';
 import 'package:iamsmart/service/snakbar_service.dart';
 import 'package:iamsmart/util/theme.dart';
 import 'package:iamsmart/util/utilities.dart';
-import 'package:iamsmart/widget/custom_textfield.dart';
 import 'package:string_validator/string_validator.dart';
 
 import '../../util/colors.dart';
