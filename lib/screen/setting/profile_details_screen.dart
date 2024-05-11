@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iamsmart/main.dart';
@@ -44,6 +46,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   @override
   Widget build(BuildContext context) {
     userProfile = UserProfile.fromJson(prefs.getString(PreferenceKey.user)!);
+    log('id : ${userProfile.id}');
     loadSavedData();
     return Scaffold(
       appBar: AppBar(

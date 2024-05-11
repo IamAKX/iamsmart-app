@@ -39,7 +39,7 @@ class DepositeToUserWalletScreen extends StatefulWidget {
 class _DepositeToUserWalletScreenState
     extends State<DepositeToUserWalletScreen> {
   final TextEditingController _amountCtrl = TextEditingController();
-  String _selectedPaymentMode = '';
+  String _selectedPaymentMode = depositePaymentModeList.first;
   bool isImageSelected = false;
   File? imageFile;
   bool isAgreementChecked = false;
@@ -79,26 +79,29 @@ class _DepositeToUserWalletScreenState
                   icon: FontAwesomeIcons.coins),
               Padding(
                 padding: const EdgeInsets.all(defaultPadding),
-                child: DropdownButton<String>(
-                  icon: const Icon(
-                    FontAwesomeIcons.chevronDown,
-                    size: 15,
-                    color: textColorLight,
+                child: SizedBox(
+                  child: DropdownButton<String>(
+                    // icon: const Icon(
+                    //   FontAwesomeIcons.chevronDown,
+                    //   size: 15,
+                    //   color: textColorLight,
+                    // ),
+                    // showSelectedItems: true,
+                    // : _selectedPaymentMode,
+                    hint: Text('Payment Mode'),
+                    // items: depositePaymentModeList.map((e) => DropdownMenuItem(child: Text('e'))).toList(),
+                    items: depositePaymentModeList.map((String mode) {
+                      return DropdownMenuItem<String>(
+                        value: mode,
+                        child: Text(mode),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedPaymentMode = value!;
+                      });
+                    },
                   ),
-                  // showSelectedItems: true,
-                  // : _selectedPaymentMode,
-                  hint: Text('Payment Mode'),
-                  // items: depositePaymentModeList.map((e) => DropdownMenuItem(child: Text('e'))).toList(),
-                  items: depositePaymentModeList.map((String location) {
-                    return  DropdownMenuItem<String>(
-                      child:  Text(location),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedPaymentMode = value!;
-                    });
-                  },
                 ),
               ),
               getPayeeAccountDetail(),

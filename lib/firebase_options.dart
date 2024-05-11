@@ -50,20 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAODfqYUEboaYjnlYNRKOQQ8h8hQ9_ODsU',
-    appId: '1:782280543705:android:e1844838c8369a455c9dc8',
-    messagingSenderId: '782280543705',
-    projectId: 'iamsmart-d3a89',
-    storageBucket: 'iamsmart-d3a89.appspot.com',
+    apiKey: 'AIzaSyA718FaBiHjOLhlFj0av2R02YkRod7CGsA',
+    appId: '1:515295728082:android:f5518cb91b68aeeb7d780b',
+    messagingSenderId: '515295728082',
+    projectId: 'iamsmart-fee96',
+    storageBucket: 'iamsmart-fee96.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBU50P9NPFT7xiTLUe-OR1FylLbPOj8xN0',
-    appId: '1:782280543705:ios:41122e36c494c1295c9dc8',
-    messagingSenderId: '782280543705',
-    projectId: 'iamsmart-d3a89',
-    storageBucket: 'iamsmart-d3a89.appspot.com',
-    iosClientId: '782280543705-nungngakh54juqabuhe99oh78chonbnd.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDJOnicVYpigPpJSZgZFZr_FS-yXeiwQTE',
+    appId: '1:515295728082:ios:36f0f835304a469e7d780b',
+    messagingSenderId: '515295728082',
+    projectId: 'iamsmart-fee96',
+    storageBucket: 'iamsmart-fee96.appspot.com',
     iosBundleId: 'com.visutechnologies.iamsmart',
   );
 }

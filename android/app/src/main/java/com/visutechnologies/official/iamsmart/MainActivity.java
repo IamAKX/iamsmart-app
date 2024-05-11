@@ -1,4 +1,4 @@
-package com.visutechnologies.iamsmart;
+package com.visutechnologies.official.iamsmart;
 
 import io.flutter.embedding.android.FlutterFragmentActivity;
 

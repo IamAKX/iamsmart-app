@@ -1,43 +1,26 @@
 {
   "project_info": {
-    "project_number": "782280543705",
-    "project_id": "iamsmart-d3a89",
-    "storage_bucket": "iamsmart-d3a89.appspot.com"
+    "project_number": "515295728082",
+    "project_id": "iamsmart-fee96",
+    "storage_bucket": "iamsmart-fee96.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:782280543705:android:e1844838c8369a455c9dc8",
+        "mobilesdk_app_id": "1:515295728082:android:f5518cb91b68aeeb7d780b",
         "android_client_info": {
-          "package_name": "com.visutechnologies.iamsmart"
+          "package_name": "com.visutechnologies.official.iamsmart"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "782280543705-fpjr7qs4d6l4apdd8ajlf4r5d77pa01m.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAODfqYUEboaYjnlYNRKOQQ8h8hQ9_ODsU"
+          "current_key": "AIzaSyA718FaBiHjOLhlFj0av2R02YkRod7CGsA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "782280543705-fpjr7qs4d6l4apdd8ajlf4r5d77pa01m.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "782280543705-nungngakh54juqabuhe99oh78chonbnd.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.visutechnologies.iamsmart"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
