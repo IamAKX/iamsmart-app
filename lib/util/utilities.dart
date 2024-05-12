@@ -134,7 +134,7 @@ class Utilities {
   static Future<bool> sendEmail(EmailModel emailBody) async {
     Dio dio = Dio();
     String api =
-        'https://us-central1-iamsmart-d3a89.cloudfunctions.net/userFunction/v1/admin/sendEmail';
+        'https://us-central1-iamsmart-fee96.cloudfunctions.net/userFunction/v1/admin/sendEmail';
     var data = {
       "from": emailBody.from,
       "to": emailBody.to,

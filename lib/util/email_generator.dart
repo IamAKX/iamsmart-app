@@ -4,7 +4,7 @@ import '../model/user_profile.dart';
 import 'constants.dart';
 
 class EmailGenerator {
-  String fromEmail = "iamsmart.visutechnologies@gmail.com";
+  String fromEmail = "payments@iamsmart.in";
 
   //done
   EmailModel depositToUserWalletRequest(
